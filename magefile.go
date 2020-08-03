@@ -54,15 +54,18 @@ func buildFlags() map[string]string {
 
 // Build build frontend & backend app
 func Build() error {
-	mg.Deps(Lint, GenAPI)
+	mg.Deps(GenAPI, Lint)
+
+	if err := sh.RunV("npm", "run", "build"); err != nil {
+		return err
+	}
+
 	args := []string{"build", "-trimpath", ldflags, "./cmd/server", "-o", "build/server"}
 	return sh.RunWith(buildFlags(), goexe, args...)
 }
 
 // Test test frontend & backend app
 func Test() error {
-	mg.Deps(Lint)
-
 	test := exec.Command(goexe, "test", "./...", "-cover", "-json")
 	parse := exec.Command("tparse")
 	parse.Stdin, _ = test.StdoutPipe()
@@ -168,7 +171,7 @@ func (g gh) downloadLatestReleaseFile(repo ghRepo) error {
 
 	opt := &github.ListOptions{
 		Page:    1,
-		PerPage: 100,
+		PerPage: 64,
 	}
 	assets, _, err := g.Repositories.ListReleaseAssets(ctx, repo.owner, repo.name, release.GetID(), opt)
 	if err != nil {
@@ -179,7 +182,7 @@ func (g gh) downloadLatestReleaseFile(repo ghRepo) error {
 	arch := "x86_64"
 	for _, asset := range assets {
 		name := strings.ToLower(asset.GetName())
-		if strings.Contains(name, os) {
+		if strings.Contains(name, repo.target) && strings.Contains(name, os) {
 			archIndex := strings.LastIndex(name, arch)
 			if archIndex != -1 && (len(name)-archIndex == len(arch)) {
 				if err := g.downloadFile(asset.GetBrowserDownloadURL(), target); err != nil {
