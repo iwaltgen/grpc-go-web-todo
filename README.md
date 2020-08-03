@@ -18,6 +18,6 @@ mage build
 ```
 
 [Go]: https://golang.org
-[Node]: https://golang.org
+[Node]: https://nodejs.org
 [go-releases]: https://golang.org/doc/devel/release.html
 [node-download]: https://nodejs.org/en/download/

@@ -1,5 +1,5 @@
 {
-  "name": "gRPC-Go-Web-TODO",
+  "name": "svelte-app",
   "version": "0.0.1",
   "scripts": {
     "build": "rollup -c",
