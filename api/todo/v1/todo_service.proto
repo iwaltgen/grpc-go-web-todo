@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package todo.v1;
+
+option go_package = "todov1";
+
+import "todo/v1/unit.proto";
+import "todo/v1/todo.proto";
+import "todo/v1/event.proto";
+
+service TodoService {
+  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse);
+  rpc CreateTodo(CreateTodoRequest) returns (Unit);
+  rpc UpdateTodo(UpdateTodoRequest) returns (Unit);
+  rpc DeleteTodo(DeleteTodoRequest) returns (Unit);
+  rpc SubscribeEvent(SubscribeEventRequest) returns (stream SubscribeEventResponse);
+}
+
+message ListTodosRequest {}
+
+message ListTodosResponse {
+  repeated Todo todos = 1;
+}
+
+message CreateTodoRequest {
+  Todo todo = 1;
+}
+
+message UpdateTodoRequest {
+  Todo todo = 1;
+}
+
+message DeleteTodoRequest {
+  string todo_id = 1;
+}
+
+message SubscribeEventRequest {
+  repeated Event events = 1;
+}
+
+message SubscribeEventResponse {
+  Event event = 1;
+  Todo todo = 2;
+}

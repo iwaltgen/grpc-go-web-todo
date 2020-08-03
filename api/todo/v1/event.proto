@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package todo.v1;
+
+option go_package = "todov1";
+
+enum Event {
+  EVENT_UNSPECIFIED = 0;
+  EVENT_CREATE = 1;
+  EVENT_UPDATE = 2;
+  EVENT_DELETE = 3;
+}

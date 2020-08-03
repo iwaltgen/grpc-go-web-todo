@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package todo.v1;
+
+option go_package = "todov1";
+
+message Todo {
+  string id = 1;
+  string description = 2;
+  bool completed = 3;
+}
