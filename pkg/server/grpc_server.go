@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net"
+	"runtime"
 	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -13,6 +15,8 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 )
@@ -24,10 +28,15 @@ type GRPC struct {
 }
 
 // NewGRPC create gRPC server
-func NewGRPC() *GRPC {
+func NewGRPC() (ret *GRPC) {
 	logger := log.L("server.grpc")
+
+	ret = &GRPC{
+		logger: logger,
+	}
+
 	allowAll := func(ctx context.Context) (context.Context, error) { return ctx, nil }
-	srv := grpc.NewServer(
+	ret.Server = grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_opentracing.UnaryServerInterceptor(),
@@ -35,7 +44,7 @@ func NewGRPC() *GRPC {
 			grpc_validator.UnaryServerInterceptor(),
 			grpc_auth.UnaryServerInterceptor(allowAll),
 			grpc_recovery.UnaryServerInterceptor(
-				grpc_recovery.WithRecoveryHandler(grpcRecovery(logger)),
+				grpc_recovery.WithRecoveryHandler(ret.recovery),
 			),
 		)),
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
@@ -45,7 +54,7 @@ func NewGRPC() *GRPC {
 			grpc_validator.StreamServerInterceptor(),
 			grpc_auth.StreamServerInterceptor(allowAll),
 			grpc_recovery.StreamServerInterceptor(
-				grpc_recovery.WithRecoveryHandler(grpcRecovery(logger)),
+				grpc_recovery.WithRecoveryHandler(ret.recovery),
 			),
 		)),
 	)
@@ -61,12 +70,9 @@ func NewGRPC() *GRPC {
 	logger.Info("enable middleware", log.String("type", "auth"))
 	logger.Info("enable middleware", log.String("type", "recovery"))
 
+	// TODO(iwaltgen): implement gRPC service
 	// service.Register(srv)
-
-	return &GRPC{
-		Server: srv,
-		logger: logger,
-	}
+	return ret
 }
 
 // Serve start serving
@@ -102,4 +108,20 @@ func (g *GRPC) Serve(ctx context.Context) {
 	case <-stopped:
 		t.Stop()
 	}
+}
+
+func (g *GRPC) recovery(r interface{}) error {
+	err, ok := r.(error)
+	if !ok {
+		err = fmt.Errorf("%v", r)
+	}
+
+	stack := make([]byte, panicPrintStackSize)
+	length := runtime.Stack(stack, panicPrintStackAll)
+	g.logger.Error("[PANIC RECOVER]",
+		log.ByteString("stack", stack[:length]),
+		log.Error(err),
+	)
+
+	return status.Error(codes.Internal, err.Error())
 }
