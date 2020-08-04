@@ -39,11 +39,11 @@ func unixStringToTime(unixStr string) (t time.Time, err error) {
 }
 
 func main() {
-	log.L("cmd.server").Info("metadata",
-		log.String("version", version),
-		log.String("commit_hash", commitHash),
-		log.String("build_date", BuildDate().UTC().Format(time.RFC3339)),
-	)
+	logger := log.L("cmd.server")
+	logger.Info("metadata", log.String("version", version))
+	logger.Info("metadata", log.String("commit_hash", commitHash))
+	logger.Info("metadata", log.String("build_date", BuildDate().UTC().Format(time.RFC3339)))
+
 	daemon := server.NewComposer()
 	daemon.Serve(context.Background())
 }

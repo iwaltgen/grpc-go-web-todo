@@ -23,9 +23,9 @@ const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
 	version     = "0.0.1"
 	ldflags     = "-ldflags=-s -w" +
-		" -X $PACKAGE/cmd/server/main.version=$VERSION" +
-		" -X $PACKAGE/cmd/server/main.commitHash=$COMMIT_HASH" +
-		" -X $PACKAGE/cmd/server/main.buildDate=$BUILD_DATE"
+		" -X main.version=$VERSION" +
+		" -X main.commitHash=$COMMIT_HASH" +
+		" -X main.buildDate=$BUILD_DATE"
 )
 
 var (
@@ -60,9 +60,13 @@ func Build() error {
 		return err
 	}
 
+	mg.Deps(GenStatic)
+
 	args := []string{"build", "-trimpath", ldflags, "-o", "./build/server", "./cmd/server"}
 	return sh.RunWith(buildFlags(), goexe, args...)
 }
+
+// TODO(iwaltgen): livereload command
 
 // Clean clean build artifacts
 func Clean() {
@@ -91,12 +95,22 @@ func Lint() error {
 	return sh.RunV("bin/golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
 }
 
+// GenStatic generate frontend static resource for backend embed
+func GenStatic() error {
+	return sh.RunV(goexe, "generate", "./pkg/...")
+}
+
 // GenAPI generate API
 func GenAPI() error {
 	if err := sh.RunV("bin/prototool", "lint"); err != nil {
 		return err
 	}
 	return sh.RunV("bin/prototool", "generate")
+}
+
+// Gen generate API & embed resource
+func Gen() {
+	mg.Deps(GenAPI, GenStatic)
 }
 
 // All generate, build app

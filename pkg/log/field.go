@@ -189,7 +189,7 @@ func Stringer(key string, val fmt.Stringer) Field {
 	if val == nil {
 		return String(key, "nil")
 	}
-	return Stringer(key, val)
+	return zap.Stringer(key, val)
 }
 
 // Fields map[string]interface{} to []Fields
