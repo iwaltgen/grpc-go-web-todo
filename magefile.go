@@ -23,9 +23,9 @@ const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
 	version     = "0.0.1"
 	ldflags     = "-ldflags=-s -w" +
-		" -X $PACKAGE/pkg/cli/info.version=$VERSION" +
-		" -X $PACKAGE/pkg/cli/info.commitHash=$COMMIT_HASH" +
-		" -X $PACKAGE/pkg/cli/info.buildDate=$BUILD_DATE"
+		" -X $PACKAGE/cmd/server/main.version=$VERSION" +
+		" -X $PACKAGE/cmd/server/main.commitHash=$COMMIT_HASH" +
+		" -X $PACKAGE/cmd/server/main.buildDate=$BUILD_DATE"
 )
 
 var (
@@ -60,13 +60,19 @@ func Build() error {
 		return err
 	}
 
-	args := []string{"build", "-trimpath", ldflags, "./cmd/server", "-o", "build/server"}
+	args := []string{"build", "-trimpath", ldflags, "-o", "./build/server", "./cmd/server"}
 	return sh.RunWith(buildFlags(), goexe, args...)
+}
+
+// Clean clean build artifacts
+func Clean() {
+	_ = sh.Rm("public/build")
+	_ = sh.Rm("build")
 }
 
 // Test test frontend & backend app
 func Test() error {
-	test := exec.Command(goexe, "test", "./...", "-cover", "-json")
+	test := exec.Command(goexe, "test", "./pkg/...", "-cover", "-json")
 	parse := exec.Command("tparse")
 	parse.Stdin, _ = test.StdoutPipe()
 	parse.Stdout = os.Stdout
@@ -78,6 +84,10 @@ func Test() error {
 
 // Lint lint frontend & backend app
 func Lint() error {
+	if err := sh.RunV("npm", "run", "validate"); err != nil {
+		return err
+	}
+
 	return sh.RunV("bin/golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
 }
 
@@ -87,6 +97,11 @@ func GenAPI() error {
 		return err
 	}
 	return sh.RunV("bin/prototool", "generate")
+}
+
+// All generate, build app
+func All() {
+	mg.Deps(GenAPI, Lint, Test, Build)
 }
 
 // Install install package & tool
