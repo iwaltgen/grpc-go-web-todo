@@ -38,9 +38,11 @@ func (s *Composer) Serve(ctx context.Context) {
 	type server interface {
 		Serve(context.Context)
 	}
+
+	gsrv := NewGRPC()
 	servers := []server{
-		NewGRPC(),
-		NewHTTP(),
+		gsrv,
+		NewHTTP(gsrv.Server),
 		newSignalTermReceiver(cancel),
 	}
 

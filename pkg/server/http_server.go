@@ -9,11 +9,13 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/labstack/echo-contrib/jaegertracing"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/opentracing/opentracing-go"
 	"github.com/rakyll/statik/fs"
+	"google.golang.org/grpc"
 
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 	_ "github.com/iwaltgen/grpc-go-web-todo/pkg/server/statik" // frontend embedded resource
@@ -27,7 +29,7 @@ type HTTP struct {
 }
 
 // NewHTTP create HTTP server
-func NewHTTP() (ret *HTTP) {
+func NewHTTP(gsrv *grpc.Server) (ret *HTTP) {
 	logger := log.L("server.http")
 
 	e := echo.New()
@@ -60,6 +62,7 @@ func NewHTTP() (ret *HTTP) {
 		logger.Panic("new statik file system error", log.Error(err))
 	}
 
+	e.POST("/*", echo.WrapHandler(grpcweb.WrapServer(gsrv)))
 	e.GET("/*", echo.WrapHandler(http.FileServer(statikFS)))
 	return ret
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/gogo/status"
 	"google.golang.org/grpc/codes"
 
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/entity"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 )
 
@@ -35,6 +36,7 @@ func newTodoService() *TodoService {
 }
 
 // ListTodos get all todo
-func (s *TodoService) ListTodos(context.Context) ([]interface{}, error) {
+func (s *TodoService) ListTodos(context.Context) ([]*entity.Todo, error) {
+	// TODO(iwaltgen): repository query
 	return nil, status.Error(codes.Unimplemented, codes.Unimplemented.String())
 }

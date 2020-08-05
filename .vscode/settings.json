@@ -1,5 +1,5 @@
 {
-  "clang-format.style": "{BasedOnStyle: google, ColumnLimit: 120}", // for tlesif dttt.proto
+  "clang-format.style": "{BasedOnStyle: google, ColumnLimit: 120}",
   "protoc": {
     "options": [
       "--proto_path=api",

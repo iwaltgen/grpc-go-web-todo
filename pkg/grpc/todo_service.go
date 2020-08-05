@@ -4,10 +4,11 @@ import (
 	"context"
 	"sync"
 
+	"github.com/gogo/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 
-	"github.com/gogo/status"
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/grpc/message"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/usecase"
 
@@ -45,8 +46,13 @@ func newTodoService(todoUsecase *usecase.TodoService) todov1.TodoServiceServer {
 }
 
 func (s *todoService) ListTodos(ctx context.Context, req *todov1.ListTodosRequest) (*todov1.ListTodosResponse, error) {
-	_, err := s.todoUsecase.ListTodos(ctx)
-	return nil, err
+	ret, err := s.todoUsecase.ListTodos(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &todov1.ListTodosResponse{
+		Todos: message.TodoProtoList(ret),
+	}, nil
 }
 
 func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*todov1.Unit, error) {

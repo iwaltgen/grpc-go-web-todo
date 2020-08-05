@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -52,6 +53,15 @@ func (x x509Generator) x509PemBlockForCertificate(derBytes []byte) *pem.Block {
 	return &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}
 }
 
+// create certificate
+func (x x509Generator) newCertificate(hosts []string) (tls.Certificate, error) {
+	cert, key, err := x.newX509KeyPairBytes(hosts)
+	if err != nil {
+		return tls.Certificate{}, err
+	}
+	return tls.X509KeyPair(cert, key)
+}
+
 // create x509 key pair bytes
 func (x x509Generator) newX509KeyPairBytes(hosts []string) (cert, key []byte, err error) {
 	certPEM, keyPEM, err := x.newX509KeyPair(hosts)
@@ -90,7 +100,7 @@ func (x x509Generator) newX509KeyPair(hosts []string) (cert, key *pem.Block, err
 		SerialNumber: x.x509SerialNumber(),
 		Subject: pkix.Name{
 			Country:      []string{"KR"},
-			Organization: []string{"KPS DTTTD"},
+			Organization: []string{"iwaltgen"},
 		},
 		NotBefore: time.Now(),
 		NotAfter:  time.Now().Add(certificateExpires),

@@ -16,6 +16,8 @@ import (
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
 	pgrpc "github.com/iwaltgen/grpc-go-web-todo/pkg/grpc"
@@ -24,6 +26,7 @@ import (
 
 // GRPC gRPC Server
 type GRPC struct {
+	x509Generator
 	*grpc.Server
 	logger *log.Logger
 }
@@ -36,12 +39,21 @@ func NewGRPC() (ret *GRPC) {
 		logger: logger,
 	}
 
+	certificate, err := ret.newCertificate(DevHosts)
+	if err != nil {
+		logger.Panic("new x509 certificate error", log.Error(err))
+	}
+
+	creds := credentials.NewServerTLSFromCert(&certificate)
 	allowAll := func(ctx context.Context) (context.Context, error) { return ctx, nil }
-	ret.Server = grpc.NewServer(
+
+	zapOptDuration := grpc_zap.WithDurationField(grpc_zap.DurationToDurationField)
+	srv := grpc.NewServer(
+		grpc.Creds(creds),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_opentracing.UnaryServerInterceptor(),
-			grpc_zap.UnaryServerInterceptor(logger),
+			grpc_zap.UnaryServerInterceptor(logger, zapOptDuration),
 			grpc_validator.UnaryServerInterceptor(),
 			grpc_auth.UnaryServerInterceptor(allowAll),
 			grpc_recovery.UnaryServerInterceptor(
@@ -51,7 +63,7 @@ func NewGRPC() (ret *GRPC) {
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_opentracing.StreamServerInterceptor(),
-			grpc_zap.StreamServerInterceptor(logger),
+			grpc_zap.StreamServerInterceptor(logger, zapOptDuration),
 			grpc_validator.StreamServerInterceptor(),
 			grpc_auth.StreamServerInterceptor(allowAll),
 			grpc_recovery.StreamServerInterceptor(
@@ -59,6 +71,7 @@ func NewGRPC() (ret *GRPC) {
 			),
 		)),
 	)
+	ret.Server = srv
 
 	logger.Info("enable middleware", log.String("type", "tags"))
 	logger.Info("enable middleware",
@@ -71,7 +84,8 @@ func NewGRPC() (ret *GRPC) {
 	logger.Info("enable middleware", log.String("type", "auth"))
 	logger.Info("enable middleware", log.String("type", "recovery"))
 
-	pgrpc.Register(ret.Server)
+	pgrpc.Register(srv)
+	reflection.Register(srv)
 	return ret
 }
 

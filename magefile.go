@@ -128,8 +128,9 @@ func GenStatic() error {
 }
 
 // Gen generate API & embed resource
-func Gen() {
-	mg.Deps(GenAPI, GenWire, GenStatic)
+func Gen() error {
+	mg.Deps(GenAPI, GenWire)
+	return sh.RunV(goexe, "generate", "./pkg/...")
 }
 
 // All generate, build app
