@@ -66,7 +66,21 @@ func Build() error {
 	return sh.RunWith(buildFlags(), goexe, args...)
 }
 
-// TODO(iwaltgen): livereload command
+// Dev serve frontend & backend development
+func Dev() error {
+	mg.Deps(GenAPI, Lint)
+
+	go func() {
+		_ = sh.RunV("npm", "run", "dev")
+	}()
+	return sh.RunV("air")
+}
+
+// BuildDev build backend for development
+func BuildDev() error {
+	args := []string{"build", "-trimpath", ldflags, "-o", "./tmp/server", "./cmd/server"}
+	return sh.RunWith(buildFlags(), goexe, args...)
+}
 
 // Clean clean build artifacts
 func Clean() {
@@ -92,7 +106,7 @@ func Lint() error {
 		return err
 	}
 
-	return sh.RunV("bin/golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
+	return sh.RunV("golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
 }
 
 // GenStatic generate frontend static resource for backend embed
@@ -102,10 +116,10 @@ func GenStatic() error {
 
 // GenAPI generate API
 func GenAPI() error {
-	if err := sh.RunV("bin/prototool", "lint"); err != nil {
+	if err := sh.RunV("prototool", "lint"); err != nil {
 		return err
 	}
-	return sh.RunV("bin/prototool", "generate")
+	return sh.RunV("prototool", "generate")
 }
 
 // Gen generate API & embed resource
@@ -132,6 +146,7 @@ func Install() error {
 		"github.com/gogo/protobuf/protoc-gen-gogoslick",
 		"github.com/rakyll/statik",
 		"github.com/mfridman/tparse",
+		"github.com/cosmtrek/air",
 	}
 	for _, v := range modules {
 		if err := gg.installModule(v); err != nil {
