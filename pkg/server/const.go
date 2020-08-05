@@ -3,6 +3,8 @@ package server
 import "time"
 
 const (
+	httpPort            = ":8443"
+	grpcPort            = ":8444"
 	shutdownWaitTimeout = 3 * time.Second
 )
 

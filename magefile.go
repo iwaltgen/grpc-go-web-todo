@@ -54,7 +54,7 @@ func buildFlags() map[string]string {
 
 // Build build frontend & backend app
 func Build() error {
-	mg.Deps(GenAPI, Lint)
+	mg.Deps(Lint)
 
 	if err := sh.RunV("npm", "run", "build"); err != nil {
 		return err
@@ -68,7 +68,7 @@ func Build() error {
 
 // Dev serve frontend & backend development
 func Dev() error {
-	mg.Deps(GenAPI, Lint)
+	mg.Deps(Lint)
 
 	go func() {
 		_ = sh.RunV("npm", "run", "dev")
@@ -109,11 +109,6 @@ func Lint() error {
 	return sh.RunV("golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
 }
 
-// GenStatic generate frontend static resource for backend embed
-func GenStatic() error {
-	return sh.RunV(goexe, "generate", "./pkg/...")
-}
-
 // GenAPI generate API
 func GenAPI() error {
 	if err := sh.RunV("prototool", "lint"); err != nil {
@@ -122,14 +117,24 @@ func GenAPI() error {
 	return sh.RunV("prototool", "generate")
 }
 
+// GenWire generate wire code
+func GenWire() error {
+	return sh.RunV("wire", "./pkg/...")
+}
+
+// GenStatic generate frontend static resource for backend embed
+func GenStatic() error {
+	return sh.RunV(goexe, "generate", "./pkg/server/...")
+}
+
 // Gen generate API & embed resource
 func Gen() {
-	mg.Deps(GenAPI, GenStatic)
+	mg.Deps(GenAPI, GenWire, GenStatic)
 }
 
 // All generate, build app
 func All() {
-	mg.Deps(GenAPI, Lint, Test, Build)
+	mg.Deps(Lint, Test, Build)
 }
 
 // Install install package & tool
@@ -137,13 +142,13 @@ func Install() error {
 	color.Green("install tools...")
 	gg := gg{}
 	modules := []string{
-		"golang.org/x/lint/golint",
 		"github.com/golang/protobuf/protoc-gen-go",
 		"github.com/gogo/protobuf/protoc-gen-gogo",
 		"github.com/gogo/protobuf/protoc-gen-gofast",
 		"github.com/gogo/protobuf/protoc-gen-gogofast",
 		"github.com/gogo/protobuf/protoc-gen-gogofaster",
 		"github.com/gogo/protobuf/protoc-gen-gogoslick",
+		"github.com/google/wire/cmd/wire",
 		"github.com/rakyll/statik",
 		"github.com/mfridman/tparse",
 		"github.com/cosmtrek/air",

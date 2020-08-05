@@ -44,6 +44,7 @@ func NewHTTP() (ret *HTTP) {
 		Format: "${time_rfc3339}\t${method}\t${uri}\t${status} ${latency_human}\t" +
 			"${remote_ip} ${bytes_in} ${bytes_out} ${error}\n",
 	}))
+	e.Use(middleware.Gzip())
 	e.Use(ret.recovery)
 
 	logger.Info("enable middleware",
@@ -65,7 +66,7 @@ func NewHTTP() (ret *HTTP) {
 
 // Serve start serving
 func (h *HTTP) Serve(ctx context.Context) {
-	addr := ":8443"
+	addr := httpPort
 	insecure := !strings.Contains(addr, "443")
 
 	go func() {

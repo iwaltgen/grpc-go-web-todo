@@ -18,6 +18,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	pgrpc "github.com/iwaltgen/grpc-go-web-todo/pkg/grpc"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 )
 
@@ -70,14 +71,13 @@ func NewGRPC() (ret *GRPC) {
 	logger.Info("enable middleware", log.String("type", "auth"))
 	logger.Info("enable middleware", log.String("type", "recovery"))
 
-	// TODO(iwaltgen): implement gRPC service
-	// service.Register(srv)
+	pgrpc.Register(ret.Server)
 	return ret
 }
 
 // Serve start serving
 func (g *GRPC) Serve(ctx context.Context) {
-	addr := ":9000"
+	addr := grpcPort
 	ln, err := net.Listen("tcp", addr)
 	if err != nil {
 		g.logger.Panic("failed to listen", log.Error(err))
