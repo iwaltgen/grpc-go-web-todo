@@ -50,21 +50,37 @@ func (s *todoService) ListTodos(ctx context.Context, req *todov1.ListTodosReques
 	if err != nil {
 		return nil, err
 	}
+
 	return &todov1.ListTodosResponse{
 		Todos: message.TodoProtoList(ret),
 	}, nil
 }
 
 func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*todov1.Unit, error) {
-	return nil, status.Error(codes.Unimplemented, codes.Unimplemented.String())
+	err := s.todoUsecase.CreateTodo(ctx, message.TodoFromProto(req.Todo))
+	if err != nil {
+		return nil, err
+	}
+
+	return &todov1.Unit{}, nil
 }
 
 func (s *todoService) UpdateTodo(ctx context.Context, req *todov1.UpdateTodoRequest) (*todov1.Unit, error) {
-	return nil, status.Error(codes.Unimplemented, codes.Unimplemented.String())
+	err := s.todoUsecase.UpdateTodo(ctx, message.TodoFromProto(req.Todo))
+	if err != nil {
+		return nil, err
+	}
+
+	return &todov1.Unit{}, nil
 }
 
 func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequest) (*todov1.Unit, error) {
-	return nil, status.Error(codes.Unimplemented, codes.Unimplemented.String())
+	err := s.todoUsecase.DeleteTodo(ctx, req.TodoId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &todov1.Unit{}, nil
 }
 
 func (s *todoService) SubscribeEvent(*todov1.SubscribeEventRequest, todov1.TodoService_SubscribeEventServer) error {

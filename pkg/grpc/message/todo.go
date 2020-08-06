@@ -12,8 +12,8 @@ func TodoFromProto(value *todov1.Todo) *entity.Todo {
 		ID:          value.Id,
 		Description: value.Description,
 		Completed:   value.Completed,
-		ModifiedAt:  TimestampFromProto(value.ModifiedAt),
-		CreatedAt:   TimestampFromProto(value.CreatedAt),
+		// ModifiedAt:  TimestampFromProto(value.ModifiedAt),
+		// CreatedAt:   TimestampFromProto(value.CreatedAt),
 	}
 }
 

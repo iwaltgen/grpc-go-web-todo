@@ -158,6 +158,7 @@ func Install() error {
 		"github.com/gogo/protobuf/protoc-gen-gogofast",
 		"github.com/gogo/protobuf/protoc-gen-gogofaster",
 		"github.com/gogo/protobuf/protoc-gen-gogoslick",
+		// TODO(iwaltgen): protoc-gen-validate
 		"github.com/google/wire/cmd/wire",
 		"github.com/rakyll/statik",
 		"github.com/mfridman/tparse",
