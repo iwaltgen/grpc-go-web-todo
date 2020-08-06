@@ -90,14 +90,7 @@ func Clean() {
 
 // Test test frontend & backend app
 func Test() error {
-	test := exec.Command(goexe, "test", "./pkg/...", "-cover", "-json")
-	parse := exec.Command("tparse")
-	parse.Stdin, _ = test.StdoutPipe()
-	parse.Stdout = os.Stdout
-
-	_ = parse.Start()
-	_ = test.Run()
-	return parse.Wait()
+	return sh.RunV("sh", "-c", "go test ./pkg/... -cover -json | tparse -all")
 }
 
 // Lint lint frontend & backend app

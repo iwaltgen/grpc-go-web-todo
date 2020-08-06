@@ -19,6 +19,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rakyll/statik v0.1.7
 	github.com/rs/cors v1.7.0 // indirect
+	github.com/stretchr/testify v1.4.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	go.uber.org/zap v1.15.0
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
