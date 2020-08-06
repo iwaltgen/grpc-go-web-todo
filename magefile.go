@@ -41,7 +41,7 @@ func init() {
 	workspace, _ = os.Getwd()
 }
 
-func buildFlags() map[string]string {
+func buildEnv() map[string]string {
 	hash, _ := sh.Output("git", "rev-parse", "--verify", "HEAD")
 	return map[string]string{
 		"PACKAGE":     packageName,
@@ -63,7 +63,7 @@ func Build() error {
 	mg.Deps(GenStatic)
 
 	args := []string{"build", "-trimpath", ldflags, "-o", "./build/server", "./cmd/server"}
-	return sh.RunWith(buildFlags(), goexe, args...)
+	return sh.RunWith(buildEnv(), goexe, args...)
 }
 
 // Dev serve frontend & backend development
@@ -79,7 +79,7 @@ func Dev() error {
 // BuildDev build backend for development
 func BuildDev() error {
 	args := []string{"build", "-trimpath", ldflags, "-o", "./tmp/server", "./cmd/server"}
-	return sh.RunWith(buildFlags(), goexe, args...)
+	return sh.RunWith(buildEnv(), goexe, args...)
 }
 
 // Clean clean build artifacts
@@ -111,10 +111,19 @@ func Lint() error {
 
 // GenAPI generate API
 func GenAPI() error {
-	if err := sh.RunV("prototool", "lint"); err != nil {
+	gopath, err := sh.Output(goexe, "env", "GOPATH")
+	if err != nil {
 		return err
 	}
-	return sh.RunV("prototool", "generate")
+
+	env := map[string]string{
+		"PROTOTOOL_PROTOC_BIN_PATH": "bin/protoc",
+		"PROTOTOOL_PROTOC_WKT_PATH": gopath + "/src/github.com/gogo/protobuf/protobuf",
+	}
+	if err := sh.RunWith(env, "prototool", "lint"); err != nil {
+		return err
+	}
+	return sh.RunWith(env, "prototool", "generate")
 }
 
 // GenWire generate wire code
@@ -164,6 +173,9 @@ func Install() error {
 	repos := []ghRepo{
 		{owner: "grpc", name: "grpc-web", target: "protoc-gen-grpc-web"},
 		{owner: "uber", name: "prototool", target: "prototool"},
+		// TODO(iwaltgen): protoc
+		// TODO(iwaltgen): golangci-lint
+		// TODO(iwaltgen): grpcurl
 	}
 	for _, v := range repos {
 		if err := gh.downloadLatestReleaseFile(v); err != nil {

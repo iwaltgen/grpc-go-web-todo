@@ -17,7 +17,7 @@ import (
 
 type todoService struct {
 	logger      *log.Logger
-	todoUsecase *usecase.TodoService
+	todoUsecase *usecase.Todo
 }
 
 var (
@@ -38,7 +38,7 @@ func RegisterTodoServiceServer(srv *grpc.Server) {
 	todov1.RegisterTodoServiceServer(srv, DefaultTodoService())
 }
 
-func newTodoService(todoUsecase *usecase.TodoService) todov1.TodoServiceServer {
+func newTodoService(todoUsecase *usecase.Todo) todov1.TodoServiceServer {
 	return &todoService{
 		logger:      log.L("grpc.todo"),
 		todoUsecase: todoUsecase,

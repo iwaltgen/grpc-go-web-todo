@@ -5,9 +5,14 @@
 
 package usecase
 
+import (
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/repository"
+)
+
 // Injectors from wire.go:
 
-func createTodoService() *TodoService {
-	todoService := newTodoService()
-	return todoService
+func createTodo() *Todo {
+	todo := repository.DefaultTodo()
+	usecaseTodo := newTodo(todo)
+	return usecaseTodo
 }

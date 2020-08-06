@@ -6,12 +6,14 @@ import (
 	todov1 "github.com/iwaltgen/grpc-go-web-todo/api/todo/v1"
 )
 
-// FromTodoProto convert *todov1.Todo to *entity.Todo
-func FromTodoProto(value *todov1.Todo) *entity.Todo {
+// TodoFromProto convert *todov1.Todo to *entity.Todo
+func TodoFromProto(value *todov1.Todo) *entity.Todo {
 	return &entity.Todo{
 		ID:          value.Id,
 		Description: value.Description,
 		Completed:   value.Completed,
+		ModifiedAt:  TimestampFromProto(value.ModifiedAt),
+		CreatedAt:   TimestampFromProto(value.CreatedAt),
 	}
 }
 
@@ -21,6 +23,8 @@ func TodoProto(value *entity.Todo) *todov1.Todo {
 		Id:          value.ID,
 		Description: value.Description,
 		Completed:   value.Completed,
+		ModifiedAt:  TimestampProto(value.ModifiedAt),
+		CreatedAt:   TimestampProto(value.CreatedAt),
 	}
 }
 

@@ -18,6 +18,7 @@
 # dev
 node_modules/
 bin/*
+tmp/*
 !mage
 
 # dev artifact

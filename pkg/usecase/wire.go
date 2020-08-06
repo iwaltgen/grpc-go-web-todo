@@ -4,9 +4,11 @@ package usecase
 
 import (
 	"github.com/google/wire"
+
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/repository"
 )
 
-func createTodoService() *TodoService {
-	wire.Build(wire.NewSet(newTodoService))
+func createTodo() *Todo {
+	wire.Build(wire.NewSet(newTodo, repository.WireSet))
 	return nil
 }

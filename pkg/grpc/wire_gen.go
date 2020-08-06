@@ -13,7 +13,7 @@ import (
 // Injectors from wire.go:
 
 func createTodoService() todov1.TodoServiceServer {
-	usecaseTodoService := usecase.DefaultTodoService()
-	todoServiceServer := newTodoService(usecaseTodoService)
+	todo := usecase.DefaultTodo()
+	todoServiceServer := newTodoService(todo)
 	return todoServiceServer
 }

@@ -21,13 +21,6 @@ func NewComposer() *Composer {
 // Serve start serving
 func (s *Composer) Serve(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
-	s.openDatabase()
-
-	defer func() {
-		cancel()
-		s.closeDatabase()
-	}()
-
 	tracer, closer, err := NewJaegerTracer()
 	if err != nil {
 		s.logger.Warn("new opentracing tracer error", log.Error(err))
@@ -58,12 +51,4 @@ func (s *Composer) Serve(ctx context.Context) {
 
 	s.logger.Info("serve started", log.Int("count", len(servers)))
 	wg.Wait()
-}
-
-func (s *Composer) openDatabase() {
-	// TODO(iwaltgen): open DB
-}
-
-func (s *Composer) closeDatabase() {
-	// TODO(iwaltgen): close DB
 }
