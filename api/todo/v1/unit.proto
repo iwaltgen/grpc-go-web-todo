@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package todo.v1;
-
-option go_package = "todov1";
-
-message Unit {}

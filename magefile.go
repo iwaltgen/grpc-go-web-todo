@@ -95,9 +95,10 @@ func Test() error {
 
 // Lint lint frontend & backend app
 func Lint() error {
-	if err := sh.RunV("npm", "run", "validate"); err != nil {
-		return err
-	}
+	// TODO(iwaltgen): typescript support not yet
+	// if err := sh.RunV("npm", "run", "lint"); err != nil {
+	// 	return err
+	// }
 
 	return sh.RunV("golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
 }

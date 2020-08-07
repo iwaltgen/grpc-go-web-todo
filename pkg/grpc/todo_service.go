@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/gogo/protobuf/types"
 	"github.com/gogo/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -56,31 +57,31 @@ func (s *todoService) ListTodos(ctx context.Context, req *todov1.ListTodosReques
 	}, nil
 }
 
-func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*todov1.Unit, error) {
+func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*types.Empty, error) {
 	err := s.todoUsecase.CreateTodo(ctx, message.TodoFromProto(req.Todo))
 	if err != nil {
 		return nil, err
 	}
 
-	return &todov1.Unit{}, nil
+	return &types.Empty{}, nil
 }
 
-func (s *todoService) UpdateTodo(ctx context.Context, req *todov1.UpdateTodoRequest) (*todov1.Unit, error) {
+func (s *todoService) UpdateTodo(ctx context.Context, req *todov1.UpdateTodoRequest) (*types.Empty, error) {
 	err := s.todoUsecase.UpdateTodo(ctx, message.TodoFromProto(req.Todo))
 	if err != nil {
 		return nil, err
 	}
 
-	return &todov1.Unit{}, nil
+	return &types.Empty{}, nil
 }
 
-func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequest) (*todov1.Unit, error) {
+func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequest) (*types.Empty, error) {
 	err := s.todoUsecase.DeleteTodo(ctx, req.TodoId)
 	if err != nil {
 		return nil, err
 	}
 
-	return &todov1.Unit{}, nil
+	return &types.Empty{}, nil
 }
 
 func (s *todoService) SubscribeEvent(*todov1.SubscribeEventRequest, todov1.TodoService_SubscribeEventServer) error {

@@ -1,29 +1,61 @@
 {
-  "name": "svelte-app",
-  "version": "0.0.1",
+  "name": "grpc-web-svelte-todo",
+  "version": "0.1.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "validate": "svelte-check"
+    "lint": "eslint . --fix --ext .js,.ts,.svelte"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iwaltgen/grpc-go-web-todo.git"
+  },
+  "keywords": [
+    "svelte",
+    "grpc-web",
+    "todomvc"
+  ],
+  "author": {
+    "name": "iwaltgen",
+    "email": "iwaltgen@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iwaltgen/grpc-go-web-todo/issues"
+  },
+  "homepage": "https://github.com/iwaltgen/grpc-go-web-todo#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^12.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@rollup/plugin-typescript": "^4.0.0",
     "@tsconfig/svelte": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-rxjs": "0.0.2-beta.28",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "prettier": "2.0.5",
+    "prettier-plugin-svelte": "^1.1.0",
     "rollup": "^2.3.4",
+    "rollup-plugin-filesize": "^9.0.2",
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^5.1.2",
     "sirv-cli": "^1.0.5",
     "svelte": "^3.0.0",
-    "svelte-check": "^1.0.0",
     "svelte-preprocess": "^4.0.0",
     "tslib": "^2.0.0",
     "typescript": "^3.9.3"
   },
   "dependencies": {
-    "grpc-web": "^1.2.0"
+    "google-protobuf": "^3.12.4",
+    "grpc-web": "^1.2.0",
+    "rxjs": "^6.6.2",
+    "todomvc-app-css": "^2.3.0",
+    "todomvc-common": "^1.0.5"
   }
 }

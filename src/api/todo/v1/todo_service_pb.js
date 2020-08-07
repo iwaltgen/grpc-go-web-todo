@@ -12,8 +12,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var todo_v1_unit_pb = require('../../todo/v1/unit_pb.js');
-goog.object.extend(proto, todo_v1_unit_pb);
+var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
+goog.object.extend(proto, google_protobuf_empty_pb);
 var todo_v1_todo_pb = require('../../todo/v1/todo_pb.js');
 goog.object.extend(proto, todo_v1_todo_pb);
 var todo_v1_event_pb = require('../../todo/v1/event_pb.js');

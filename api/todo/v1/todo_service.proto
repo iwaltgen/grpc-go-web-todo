@@ -4,15 +4,16 @@ package todo.v1;
 
 option go_package = "todov1";
 
-import "todo/v1/unit.proto";
+import "google/protobuf/empty.proto";
+
 import "todo/v1/todo.proto";
 import "todo/v1/event.proto";
 
 service TodoService {
   rpc ListTodos(ListTodosRequest) returns (ListTodosResponse);
-  rpc CreateTodo(CreateTodoRequest) returns (Unit);
-  rpc UpdateTodo(UpdateTodoRequest) returns (Unit);
-  rpc DeleteTodo(DeleteTodoRequest) returns (Unit);
+  rpc CreateTodo(CreateTodoRequest) returns (google.protobuf.Empty);
+  rpc UpdateTodo(UpdateTodoRequest) returns (google.protobuf.Empty);
+  rpc DeleteTodo(DeleteTodoRequest) returns (google.protobuf.Empty);
   rpc SubscribeEvent(SubscribeEventRequest) returns (stream SubscribeEventResponse);
 }
 

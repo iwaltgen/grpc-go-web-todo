@@ -29,14 +29,14 @@ type HTTP struct {
 }
 
 // NewHTTP create HTTP server
-func NewHTTP(gsrv *grpc.Server) (ret *HTTP) {
+func NewHTTP(gsrv *grpc.Server) (hsrv *HTTP) {
 	logger := log.L("server.http")
 
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
 
-	ret = &HTTP{
+	hsrv = &HTTP{
 		Echo:   e,
 		logger: logger,
 	}
@@ -47,7 +47,7 @@ func NewHTTP(gsrv *grpc.Server) (ret *HTTP) {
 			"${remote_ip} ${bytes_in} ${bytes_out} ${error}\n",
 	}))
 	e.Use(middleware.Gzip())
-	e.Use(ret.recovery)
+	e.Use(hsrv.recovery)
 
 	logger.Info("enable middleware",
 		log.String("type", "opentracing"),
@@ -62,9 +62,11 @@ func NewHTTP(gsrv *grpc.Server) (ret *HTTP) {
 		logger.Panic("new statik file system error", log.Error(err))
 	}
 
-	e.POST("/*", echo.WrapHandler(grpcweb.WrapServer(gsrv)))
+	gwsrv := grpcweb.WrapServer(gsrv, hsrv.withAllowAllOrigins())
+	e.POST("/*", echo.WrapHandler(gwsrv))
+	e.OPTIONS("/*", echo.WrapHandler(gwsrv))
 	e.GET("/*", echo.WrapHandler(http.FileServer(statikFS)))
-	return ret
+	return hsrv
 }
 
 // Serve start serving
@@ -124,4 +126,10 @@ func (h *HTTP) recovery(next echo.HandlerFunc) echo.HandlerFunc {
 		}()
 		return next(c)
 	}
+}
+
+func (h *HTTP) withAllowAllOrigins() grpcweb.Option {
+	return grpcweb.WithOriginFunc(func(string) bool {
+		return true
+	})
 }

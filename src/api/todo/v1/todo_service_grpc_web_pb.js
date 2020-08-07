@@ -16,7 +16,7 @@ const grpc = {};
 grpc.web = require('grpc-web');
 
 
-var todo_v1_unit_pb = require('../../todo/v1/unit_pb.js')
+var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js')
 
 var todo_v1_todo_pb = require('../../todo/v1/todo_pb.js')
 
@@ -161,13 +161,13 @@ proto.todo.v1.TodoServicePromiseClient.prototype.listTodos =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.todo.v1.CreateTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodDescriptor_TodoService_CreateTodo = new grpc.web.MethodDescriptor(
   '/todo.v1.TodoService/CreateTodo',
   grpc.web.MethodType.UNARY,
   proto.todo.v1.CreateTodoRequest,
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.CreateTodoRequest} request
    * @return {!Uint8Array}
@@ -175,7 +175,7 @@ const methodDescriptor_TodoService_CreateTodo = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -183,10 +183,10 @@ const methodDescriptor_TodoService_CreateTodo = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.todo.v1.CreateTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodInfo_TodoService_CreateTodo = new grpc.web.AbstractClientBase.MethodInfo(
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.CreateTodoRequest} request
    * @return {!Uint8Array}
@@ -194,7 +194,7 @@ const methodInfo_TodoService_CreateTodo = new grpc.web.AbstractClientBase.Method
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -203,9 +203,9 @@ const methodInfo_TodoService_CreateTodo = new grpc.web.AbstractClientBase.Method
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.todo.v1.Unit)}
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.todo.v1.Unit>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.todo.v1.TodoServiceClient.prototype.createTodo =
@@ -224,7 +224,7 @@ proto.todo.v1.TodoServiceClient.prototype.createTodo =
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.todo.v1.Unit>}
+ * @return {!Promise<!proto.google.protobuf.Empty>}
  *     A native promise that resolves to the response
  */
 proto.todo.v1.TodoServicePromiseClient.prototype.createTodo =
@@ -241,13 +241,13 @@ proto.todo.v1.TodoServicePromiseClient.prototype.createTodo =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.todo.v1.UpdateTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodDescriptor_TodoService_UpdateTodo = new grpc.web.MethodDescriptor(
   '/todo.v1.TodoService/UpdateTodo',
   grpc.web.MethodType.UNARY,
   proto.todo.v1.UpdateTodoRequest,
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.UpdateTodoRequest} request
    * @return {!Uint8Array}
@@ -255,7 +255,7 @@ const methodDescriptor_TodoService_UpdateTodo = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -263,10 +263,10 @@ const methodDescriptor_TodoService_UpdateTodo = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.todo.v1.UpdateTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodInfo_TodoService_UpdateTodo = new grpc.web.AbstractClientBase.MethodInfo(
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.UpdateTodoRequest} request
    * @return {!Uint8Array}
@@ -274,7 +274,7 @@ const methodInfo_TodoService_UpdateTodo = new grpc.web.AbstractClientBase.Method
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -283,9 +283,9 @@ const methodInfo_TodoService_UpdateTodo = new grpc.web.AbstractClientBase.Method
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.todo.v1.Unit)}
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.todo.v1.Unit>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.todo.v1.TodoServiceClient.prototype.updateTodo =
@@ -304,7 +304,7 @@ proto.todo.v1.TodoServiceClient.prototype.updateTodo =
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.todo.v1.Unit>}
+ * @return {!Promise<!proto.google.protobuf.Empty>}
  *     A native promise that resolves to the response
  */
 proto.todo.v1.TodoServicePromiseClient.prototype.updateTodo =
@@ -321,13 +321,13 @@ proto.todo.v1.TodoServicePromiseClient.prototype.updateTodo =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.todo.v1.DeleteTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodDescriptor_TodoService_DeleteTodo = new grpc.web.MethodDescriptor(
   '/todo.v1.TodoService/DeleteTodo',
   grpc.web.MethodType.UNARY,
   proto.todo.v1.DeleteTodoRequest,
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.DeleteTodoRequest} request
    * @return {!Uint8Array}
@@ -335,7 +335,7 @@ const methodDescriptor_TodoService_DeleteTodo = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -343,10 +343,10 @@ const methodDescriptor_TodoService_DeleteTodo = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.todo.v1.DeleteTodoRequest,
- *   !proto.todo.v1.Unit>}
+ *   !proto.google.protobuf.Empty>}
  */
 const methodInfo_TodoService_DeleteTodo = new grpc.web.AbstractClientBase.MethodInfo(
-  todo_v1_unit_pb.Unit,
+  google_protobuf_empty_pb.Empty,
   /**
    * @param {!proto.todo.v1.DeleteTodoRequest} request
    * @return {!Uint8Array}
@@ -354,7 +354,7 @@ const methodInfo_TodoService_DeleteTodo = new grpc.web.AbstractClientBase.Method
   function(request) {
     return request.serializeBinary();
   },
-  todo_v1_unit_pb.Unit.deserializeBinary
+  google_protobuf_empty_pb.Empty.deserializeBinary
 );
 
 
@@ -363,9 +363,9 @@ const methodInfo_TodoService_DeleteTodo = new grpc.web.AbstractClientBase.Method
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.todo.v1.Unit)}
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.todo.v1.Unit>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.todo.v1.TodoServiceClient.prototype.deleteTodo =
@@ -384,7 +384,7 @@ proto.todo.v1.TodoServiceClient.prototype.deleteTodo =
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.todo.v1.Unit>}
+ * @return {!Promise<!proto.google.protobuf.Empty>}
  *     A native promise that resolves to the response
  */
 proto.todo.v1.TodoServicePromiseClient.prototype.deleteTodo =

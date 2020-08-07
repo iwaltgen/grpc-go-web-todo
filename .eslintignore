@@ -1,0 +1,7 @@
+node_modules
+public
+src/api/js/**/*
+src/api/grpc-web/**/*
+.eslintrc.js
+.prettierrc.js
+rollup.config.js

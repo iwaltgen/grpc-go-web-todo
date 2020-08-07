@@ -1,3 +1,4 @@
 api/**/*.pb.go linguist-vendored
-src/api/**/* linguist-vendored
+src/api/js/**/* linguist-vendored
+src/api/grpc-web/**/* linguist-vendored
 pkg/statik/* linguist-vendored

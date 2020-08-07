@@ -20,8 +20,8 @@ generate:
     flags: plugins=grpc
     output: ./
   - name: js
-    flags: import_style=commonjs
-    output: ../src/api/js
+    flags: import_style=commonjs,binary
+    output: ../src/api
   - name: grpc-web
-    flags: import_style=commonjs,mode=grpcwebtext
-    output: ../src/api/grpc-web
+    flags: import_style=commonjs+dts,mode=grpcwebtext
+    output: ../src/api
