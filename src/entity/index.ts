@@ -1,2 +1,2 @@
-export type { Todo } from './todo';
-export type { Timestamp } from './timestamp';
+export * from './todo';
+export * from './timestamp';

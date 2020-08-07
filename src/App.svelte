@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { todoService } from './service';
+	import { todoService, todoStore } from './service';
 
 	const ENTER_KEY = 13;
 	const ESCAPE_KEY = 27;
@@ -86,6 +86,8 @@
 
 	$: numCompleted = items.filter(item => item.completed).length;
 
+	$: console.log($todoStore)
+
 	$: try {
 		localStorage.setItem('todos-svelte', JSON.stringify(items));
 	} catch (err) {
@@ -150,5 +152,6 @@
 				</button>
 			{/if}
 		</footer>
+		<p>{$todoStore}</p>
 	</section>
 {/if}
