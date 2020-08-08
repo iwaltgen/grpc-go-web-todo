@@ -4,6 +4,6 @@ export interface Todo {
   id: string;
   description: string;
   completed: boolean;
-  modifiedAt: Timestamp;
-  createdAt: Timestamp;
+  modifiedAt?: Timestamp;
+  createdAt?: Timestamp;
 }

@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { todoService, todoStore } from './service';
+	import { onMount } from 'svelte';
+	import { todoService } from './usecase';
 
 	const ENTER_KEY = 13;
 	const ESCAPE_KEY = 27;
 
 	let currentFilter = 'all';
-	let items = [];
 	let editing = null;
+	let items = todoService.subscribe()
 
-	try {
-		items = JSON.parse(localStorage.getItem('todos-svelte')) || [];
-	} catch (err) {
-		items = [];
-	}
+	onMount(async () => {
+		await todoService.requestList()
+	});
 
-	const updateView = () => {
-		todoService.list().subscribe(() => console.log("request list done from app"))
-
+	async function updateView() {
 		currentFilter = 'all';
 		if (window.location.hash === '#/active') {
 			currentFilter = 'active';
@@ -28,31 +25,34 @@
 	window.addEventListener('hashchange', updateView);
 	updateView();
 
-	function clearCompleted() {
-		items = items.filter(item => !item.completed);
+	async function clearCompleted() {
+		// TODO(iwaltgen): implement
+		// items = items.filter(item => !item.completed);
 	}
 
-	function remove(index: number) {
-		items = items.slice(0, index).concat(items.slice(index + 1));
+	async function remove(index: number) {
+		const todo = $items[index]
+		await todoService.delete(todo)
 	}
 
-	function toggleAll(event: Event) {
-		const target = (event.target as HTMLInputElement)
-		items = items.map(item => ({
-			id: item.id,
-			description: item.description,
-			completed: target.checked
-		}));
+	async function toggleAll(event: Event) {
+		// TODO(iwaltgen): implement
+		// const target = (event.target as HTMLInputElement)
+		// items = items.map(item => ({
+		// 	id: item.id,
+		// 	description: item.description,
+		// 	completed: target.checked
+		// }));
 	}
 
-	function createNew(event: KeyboardEvent) {
+	async function createNew(event: KeyboardEvent) {
 		const target = (event.target as HTMLInputElement)
 		if (event.which === ENTER_KEY) {
-			items = items.concat({
+			await todoService.create({
 				id: uuid(),
 				description: target.value,
 				completed: false
-			});
+			})
 			target.value = '';
 		}
 	}
@@ -63,10 +63,12 @@
 		else if (event.which === ESCAPE_KEY) editing = null;
 	}
 
-	function submit(event: FocusEvent) {
+	async function submit(event: FocusEvent) {
 		const target = (event.target as HTMLInputElement)
-		items[editing].description = target.value;
+		const todo = $items[editing]
+		todo.description = target.value
 		editing = null;
+		await todoService.update(todo)
 	}
 
 	function uuid(): string {
@@ -77,22 +79,14 @@
 	}
 
 	$: filtered = currentFilter === 'all'
-		? items
+		? $items
 		: currentFilter === 'completed'
-			? items.filter(item => item.completed)
-			: items.filter(item => !item.completed);
+			? $items.filter(item => item.completed)
+			: $items.filter(item => !item.completed);
 
-	$: numActive = items.filter(item => !item.completed).length;
+	$: numActive = $items.filter(item => !item.completed).length;
 
-	$: numCompleted = items.filter(item => item.completed).length;
-
-	$: console.log($todoStore)
-
-	$: try {
-		localStorage.setItem('todos-svelte', JSON.stringify(items));
-	} catch (err) {
-		// noop
-	}
+	$: numCompleted = $items.filter(item => item.completed).length;
 </script>
 
 <header class="header">
@@ -106,9 +100,9 @@
 	>
 </header>
 
-{#if items.length > 0}
+{#if $items.length > 0}
 	<section class="main">
-		<input id="toggle-all" class="toggle-all" type="checkbox" on:change={toggleAll} checked="{numCompleted === items.length}">
+		<input id="toggle-all" class="toggle-all" type="checkbox" on:change={toggleAll} checked="{numCompleted === $items.length}">
 		<label for="toggle-all">Mark all as complete</label>
 
 		<ul class="todo-list">
@@ -116,6 +110,7 @@
 			{#each filtered as item, index (item.id)}
 				<li class="{item.completed ? 'completed' : ''} {editing === index ? 'editing' : ''}">
 					<div class="view">
+						<!-- TODO(iwaltgen): change event handler -->
 						<input class="toggle" type="checkbox" bind:checked={item.completed}>
 						<label on:dblclick="{() => editing = index}">{item.description}</label>
 						<button on:click="{() => remove(index)}" class="destroy"></button>
@@ -152,6 +147,5 @@
 				</button>
 			{/if}
 		</footer>
-		<p>{$todoStore}</p>
 	</section>
 {/if}

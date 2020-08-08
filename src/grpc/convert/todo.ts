@@ -1,7 +1,7 @@
 import {
   Todo as TodoProto,
   // Event as EventProto,
-} from '../todo/v1';
+} from '../../api/todo/v1';
 import type { Todo } from '../../entity'
 import { timestampProto } from './wkt'
 
