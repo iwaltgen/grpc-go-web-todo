@@ -7,35 +7,36 @@ export class TodoService {
   private store = writable([] as Todo[]);
   private client = todoClient;
 
-  async requestList() {
-    const todos = await this.client.listTodo();
-    this.store.set(todos);
+  async requestList(): Promise<Todo[]> {
+    const items = await this.client.listTodo();
+    this.store.set(items);
+    return items;
   }
 
-  async create(todo: Todo) {
+  async create(todo: Todo): Promise<void> {
     const nowTimestamp = now();
     todo.modifiedAt = nowTimestamp;
     todo.createdAt = nowTimestamp;
     await this.client.create(todo);
     // TODO(iwaltgen): change subscribe
-		await this.requestList();
+    await this.requestList();
   }
 
-  async update(todo: Todo) {
+  async update(todo: Todo): Promise<void> {
     todo.modifiedAt = now();
     await this.client.update(todo);
     // TODO(iwaltgen): change subscribe
-		await this.requestList();
+    await this.requestList();
   }
 
-  async delete(todo: Todo) {
+  async delete(todo: Todo): Promise<void> {
     await this.client.delete(todo);
     // TODO(iwaltgen): change subscribe
-		await this.requestList();
+    await this.requestList();
   }
 
   subscribe(): Readable<Todo[]> {
-    return derived(this.store, $todos => $todos);
+    return derived(this.store, ($todos) => $todos);
   }
 }
 

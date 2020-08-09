@@ -1,7 +1,6 @@
 node_modules
 public
-src/api/js/**/*
-src/api/grpc-web/**/*
+src/api/**/*
 .eslintrc.js
 .prettierrc.js
 rollup.config.js

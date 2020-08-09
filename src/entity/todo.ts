@@ -1,4 +1,4 @@
-import type { Timestamp } from './timestamp'
+import type { Timestamp } from './timestamp';
 
 export interface Todo {
   id: string;
