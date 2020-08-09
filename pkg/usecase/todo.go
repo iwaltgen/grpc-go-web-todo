@@ -39,7 +39,7 @@ func newTodo(repo *repository.Todo) *Todo {
 // ListTodos is get all todo entity
 func (s *Todo) ListTodos(ctx context.Context) (ret []*entity.Todo, err error) {
 	ret, err = s.repo.FindAll(ctx)
-	sort.Sort(todoSortByModifiedAt(ret))
+	sort.Sort(sort.Reverse(todoSortByCreatedAt(ret)))
 	return ret, err
 }
 
@@ -59,16 +59,16 @@ func (s *Todo) DeleteTodo(ctx context.Context, id string) error {
 }
 
 // todo entity sort by modified time
-type todoSortByModifiedAt []*entity.Todo
+type todoSortByCreatedAt []*entity.Todo
 
-func (s todoSortByModifiedAt) Len() int {
+func (s todoSortByCreatedAt) Len() int {
 	return len(s)
 }
 
-func (s todoSortByModifiedAt) Swap(i, j int) {
+func (s todoSortByCreatedAt) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func (s todoSortByModifiedAt) Less(i, j int) bool {
-	return s[i].ModifiedAt.Before(s[j].ModifiedAt)
+func (s todoSortByCreatedAt) Less(i, j int) bool {
+	return s[i].CreatedAt.Before(s[j].CreatedAt)
 }

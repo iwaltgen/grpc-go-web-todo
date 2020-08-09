@@ -26,23 +26,35 @@
 	updateView();
 
 	async function clearCompleted() {
-		// TODO(iwaltgen): implement
-		// items = items.filter(item => !item.completed);
+		const completedItems = $items.filter(item => item.completed);
+		const promises: Promise<void>[] = [];
+		for (const item of completedItems) {
+			promises.push(todoService.delete(item));
+		}
+		await Promise.all(promises);
 	}
 
 	async function remove(index: number) {
-		const todo = $items[index];
-		await todoService.delete(todo);
+		const item = $items[index];
+		await todoService.delete(item);
 	}
 
 	async function toggleAll(event: Event) {
-		// TODO(iwaltgen): implement
-		// const target = (event.target as HTMLInputElement)
-		// items = items.map(item => ({
-		// 	id: item.id,
-		// 	description: item.description,
-		// 	completed: target.checked
-		// }));
+		const target = (event.target as HTMLInputElement);
+		const newItems = $items.map(item => ({
+			...item,
+			completed: target.checked
+		}));
+		const promises: Promise<void>[] = [];
+		for (const item of newItems) {
+			promises.push(todoService.update(item));
+		}
+		await Promise.all(promises);
+	}
+
+	async function toggle(index: number) {
+		const item = $items[index];
+		await todoService.update(item);
 	}
 
 	async function createNew(event: KeyboardEvent) {
@@ -65,10 +77,10 @@
 
 	async function submit(event: FocusEvent) {
 		const target = (event.target as HTMLInputElement);
-		const todo = $items[editing];
-		todo.description = target.value;
+		const item = $items[editing];
+		item.description = target.value;
 		editing = null;
-		await todoService.update(todo);
+		await todoService.update(item);
 	}
 
 	$: filtered = currentFilter === 'all'
@@ -99,16 +111,15 @@
 		<label for="toggle-all">Mark all as complete</label>
 
 		<ul class="todo-list">
-			<!-- svelte-ignore a11y-autofocus -->
 			{#each filtered as item, index (item.id)}
 				<li class="{item.completed ? 'completed' : ''} {editing === index ? 'editing' : ''}">
 					<div class="view">
-						<!-- TODO(iwaltgen): change event handler -->
-						<input class="toggle" type="checkbox" bind:checked={item.completed}>
+						<input class="toggle" type="checkbox" bind:checked={item.completed} on:change={() => toggle(index)}>
 						<label on:dblclick="{() => editing = index}">{item.description}</label>
 						<button on:click="{() => remove(index)}" class="destroy"></button>
 					</div>
 
+					<!-- svelte-ignore a11y-autofocus -->
 					{#if editing === index}
 						<input
 							value='{item.description}'
