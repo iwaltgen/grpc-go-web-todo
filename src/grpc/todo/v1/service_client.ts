@@ -12,12 +12,12 @@ import {
   Event,
 } from '../../../api/todo/v1';
 import type { Empty } from '../../../api/google/protobuf';
-import * as convert from '../../convert'
-import type { Todo } from '../../../entity'
+import * as convert from '../../convert';
+import type { Todo } from '../../../entity';
 
 
 export class TodoClient {
-  readonly client: TodoServiceClient
+  readonly client: TodoServiceClient;
 
   constructor (hostname: string,
                credentials?: { [index: string]: string; },
@@ -32,7 +32,7 @@ export class TodoClient {
 
       this.client.listTodos(request, metadata,(err: grpcWeb.Error, response: ListTodosResponse) => {
         if (err && err.code !== grpcWeb.StatusCode.OK) {
-          reject(err)
+          reject(err);
           return;
         }
 
@@ -45,15 +45,15 @@ export class TodoClient {
     return new Promise((resolve: () => void, reject: (reason?: any) => void) => {
       const metadata = undefined;
       const request = new CreateTodoRequest();
-      request.setTodo(convert.todoProto(todo))
+      request.setTodo(convert.todoProto(todo));
 
       this.client.createTodo(request, metadata,(err: grpcWeb.Error, response: Empty) => {
         if (err && err.code !== grpcWeb.StatusCode.OK) {
-          reject(err)
-          return
+          reject(err);
+          return;
         }
 
-        resolve()
+        resolve();
       });
     });
   }
@@ -62,15 +62,15 @@ export class TodoClient {
     return new Promise((resolve: () => void, reject: (reason?: any) => void) => {
       const metadata = undefined;
       const request = new UpdateTodoRequest();
-      request.setTodo(convert.todoProto(todo))
+      request.setTodo(convert.todoProto(todo));
 
       this.client.updateTodo(request, metadata,(err: grpcWeb.Error, response: Empty) => {
         if (err && err.code !== grpcWeb.StatusCode.OK) {
-          reject(err)
-          return
+          reject(err);
+          return;
         }
 
-        resolve()
+        resolve();
       });
     });
   }
@@ -79,15 +79,15 @@ export class TodoClient {
     return new Promise((resolve: () => void, reject: (reason?: any) => void) => {
       const metadata = undefined;
       const request = new DeleteTodoRequest();
-      request.setTodoId(todo.id)
+      request.setTodoId(todo.id);
 
       this.client.deleteTodo(request, metadata,(err: grpcWeb.Error, response: Empty) => {
         if (err && err.code !== grpcWeb.StatusCode.OK) {
-          reject(err)
-          return
+          reject(err);
+          return;
         }
 
-        resolve()
+        resolve();
       });
     });
   }

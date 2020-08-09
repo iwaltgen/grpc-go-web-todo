@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { todoService } from './usecase';
+	import { todoService, uuid } from './usecase';
 
 	const ENTER_KEY = 13;
 	const ESCAPE_KEY = 27;
 
 	let currentFilter = 'all';
 	let editing = null;
-	let items = todoService.subscribe()
+	let items = todoService.subscribe();
 
 	onMount(async () => {
-		await todoService.requestList()
+		await todoService.requestList();
 	});
 
 	async function updateView() {
@@ -20,7 +20,7 @@
 		} else if (window.location.hash === '#/completed') {
 			currentFilter = 'completed';
 		}
-	};
+	}
 
 	window.addEventListener('hashchange', updateView);
 	updateView();
@@ -31,8 +31,8 @@
 	}
 
 	async function remove(index: number) {
-		const todo = $items[index]
-		await todoService.delete(todo)
+		const todo = $items[index];
+		await todoService.delete(todo);
 	}
 
 	async function toggleAll(event: Event) {
@@ -46,13 +46,13 @@
 	}
 
 	async function createNew(event: KeyboardEvent) {
-		const target = (event.target as HTMLInputElement)
+		const target = (event.target as HTMLInputElement);
 		if (event.which === ENTER_KEY) {
 			await todoService.create({
 				id: uuid(),
 				description: target.value,
-				completed: false
-			})
+				completed: false,
+			});
 			target.value = '';
 		}
 	}
@@ -64,18 +64,11 @@
 	}
 
 	async function submit(event: FocusEvent) {
-		const target = (event.target as HTMLInputElement)
-		const todo = $items[editing]
-		todo.description = target.value
+		const target = (event.target as HTMLInputElement);
+		const todo = $items[editing];
+		todo.description = target.value;
 		editing = null;
-		await todoService.update(todo)
-	}
-
-	function uuid(): string {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-			return v.toString(16);
-		});
+		await todoService.update(todo);
 	}
 
 	$: filtered = currentFilter === 'all'
