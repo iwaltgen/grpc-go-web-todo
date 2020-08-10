@@ -1,4 +1,4 @@
-// import { Observable, Observer } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import * as grpcWeb from 'grpc-web';
 import {
   TodoServiceClient,
@@ -7,13 +7,13 @@ import {
   CreateTodoRequest,
   UpdateTodoRequest,
   DeleteTodoRequest,
-  // SubscribeEventRequest,
-  // SubscribeEventResponse,
-  // Event,
+  SubscribeEventRequest,
+  SubscribeEventResponse,
+  Event,
 } from '../../../api/todo/v1';
-// import type { Empty } from '../../../api/google/protobuf';
 import * as convert from '../../convert';
 import type { Todo } from '../../../entity';
+import type { EventTodo } from '../../../usecase/value';
 
 export class TodoClient {
   readonly client: TodoServiceClient;
@@ -22,7 +22,7 @@ export class TodoClient {
     this.client = new TodoServiceClient(hostname, credentials, options);
   }
 
-  public async listTodo(): Promise<Todo[]> {
+  public async list(): Promise<Todo[]> {
     return new Promise((resolve: (value?: Todo[]) => void, reject: (reason?: grpcWeb.Error) => void) => {
       const metadata = undefined;
       const request = new ListTodosRequest();
@@ -86,6 +86,36 @@ export class TodoClient {
 
         resolve();
       });
+    });
+  }
+
+  public subscribe(): Observable<EventTodo> {
+    const metadata = undefined;
+    const request = new SubscribeEventRequest();
+    request.setEventsList([Event.EVENT_CREATE, Event.EVENT_UPDATE, Event.EVENT_DELETE]);
+
+    return Observable.create((observer: Observer<EventTodo>) => {
+      this.client
+        .subscribeEvent(request, metadata)
+        .on('data', (response: SubscribeEventResponse) => {
+          const event = response.getEvent();
+          const todo = convert.todoFromProto(response.getTodo());
+          observer.next({
+            event,
+            todo,
+          });
+        })
+        .on('error', (error: grpcWeb.Error) => {
+          observer.error(error);
+        })
+        .on('status', (status: grpcWeb.Status) => {
+          if (status.code !== grpcWeb.StatusCode.OK) {
+            observer.error(status);
+          }
+        })
+        .on('end', () => {
+          observer.complete();
+        });
     });
   }
 }

@@ -5,10 +5,10 @@ import (
 	"sync"
 
 	"github.com/gogo/protobuf/types"
-	"github.com/gogo/status"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/entity"
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/event"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/grpc/message"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/usecase"
@@ -84,6 +84,43 @@ func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequ
 	return &types.Empty{}, nil
 }
 
-func (s *todoService) SubscribeEvent(*todov1.SubscribeEventRequest, todov1.TodoService_SubscribeEventServer) error {
-	return status.Error(codes.Unimplemented, codes.Unimplemented.String())
+func (s *todoService) SubscribeEvent(req *todov1.SubscribeEventRequest,
+	ss todov1.TodoService_SubscribeEventServer,
+) error {
+	type eventTodo struct {
+		evt  event.Event
+		todo *entity.Todo
+	}
+
+	var unsubscribes []func()
+	ch := make(chan *eventTodo)
+	for _, evt := range req.Events {
+		unsubscribe := s.todoUsecase.Subscribe(func(evt event.Event, value interface{}) {
+			ch <- &eventTodo{evt, value.(*entity.Todo)}
+		}, message.EventFromProto(evt))
+		unsubscribes = append(unsubscribes, unsubscribe)
+	}
+	defer func() {
+		close(ch)
+		for _, fn := range unsubscribes {
+			fn()
+		}
+	}()
+
+	ctx := ss.Context()
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+
+		case e := <-ch:
+			resp := &todov1.SubscribeEventResponse{
+				Event: message.EventProto(e.evt),
+				Todo:  message.TodoProto(e.todo),
+			}
+			if err := ss.Send(resp); err != nil {
+				return err
+			}
+		}
+	}
 }

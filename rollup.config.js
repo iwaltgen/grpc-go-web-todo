@@ -3,7 +3,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import livereload from 'rollup-plugin-livereload';
-import { terser } from 'rollup-plugin-terser';
+import {
+  terser
+} from 'rollup-plugin-terser';
 import filesize from 'rollup-plugin-filesize';
 import sveltePreprocess from 'svelte-preprocess';
 
@@ -60,7 +62,9 @@ export default {
       dedupe: ['svelte'],
     }),
     commonjs(),
-    typescript({ sourceMap: !production }),
+    typescript({
+      sourceMap: !production
+    }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated

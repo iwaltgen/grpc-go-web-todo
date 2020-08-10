@@ -5,15 +5,20 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/gogo/status"
+	"google.golang.org/grpc/codes"
+
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/entity"
+	"github.com/iwaltgen/grpc-go-web-todo/pkg/event"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/repository"
 )
 
 // Todo is domain logic for todo entity
 type Todo struct {
-	logger *log.Logger
-	repo   *repository.Todo
+	logger  *log.Logger
+	repo    *repository.Todo
+	emitter *event.Emitter
 }
 
 var (
@@ -31,8 +36,9 @@ func DefaultTodo() *Todo {
 
 func newTodo(repo *repository.Todo) *Todo {
 	return &Todo{
-		logger: log.L("usecase.todo"),
-		repo:   repo,
+		logger:  log.L("usecase.todo"),
+		repo:    repo,
+		emitter: &event.Emitter{},
 	}
 }
 
@@ -45,17 +51,37 @@ func (s *Todo) ListTodos(ctx context.Context) (ret []*entity.Todo, err error) {
 
 // CreateTodo is create todo entity
 func (s *Todo) CreateTodo(ctx context.Context, v *entity.Todo) error {
-	return s.repo.Create(ctx, v)
+	err := s.repo.Create(ctx, v)
+	if err == nil {
+		s.emitter.Publish(event.EventCreate, v)
+	}
+	return err
 }
 
 // UpdateTodo is update todo entity
 func (s *Todo) UpdateTodo(ctx context.Context, v *entity.Todo) error {
-	return s.repo.Update(ctx, v)
+	err := s.repo.Update(ctx, v)
+	if err == nil {
+		s.emitter.Publish(event.EventUpdate, v)
+	}
+	return err
 }
 
 // DeleteTodo is delete todo entity
 func (s *Todo) DeleteTodo(ctx context.Context, id string) error {
-	return s.repo.DeleteByID(ctx, id)
+	if ret, ok := s.repo.FindByID(ctx, id); ok {
+		err := s.repo.DeleteByID(ctx, id)
+		if err == nil {
+			s.emitter.Publish(event.EventDelete, ret)
+		}
+		return err
+	}
+	return status.Errorf(codes.NotFound, "not found error: %s", id)
+}
+
+// Subscribe is subscribe entity change event
+func (s *Todo) Subscribe(handler event.Subscription, evt event.Event) func() {
+	return s.emitter.Subscribe(handler, event.WithEvent(evt))
 }
 
 // todo entity sort by modified time

@@ -42,6 +42,14 @@ func (s *Todo) FindAll(ctx context.Context) (ret []*entity.Todo, err error) {
 	return ret, nil
 }
 
+// FindByID is Find todo entity
+func (s *Todo) FindByID(ctx context.Context, id string) (*entity.Todo, bool) {
+	if ret, ok := s.container.Load(id); ok {
+		return ret.(*entity.Todo), true
+	}
+	return nil, false
+}
+
 // Create is create todo entity
 func (s *Todo) Create(ctx context.Context, v *entity.Todo) error {
 	s.container.Store(v.ID, v)

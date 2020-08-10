@@ -110,7 +110,8 @@ func (g *GRPC) Serve(ctx context.Context) {
 
 	stopped := make(chan struct{})
 	go func() {
-		g.GracefulStop()
+		// g.GracefulStop()
+		g.Stop()
 		close(stopped)
 	}()
 

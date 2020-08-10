@@ -7,10 +7,10 @@
 
   let currentFilter = 'all';
   let editing = null;
-  let items = todoService.subscribe();
+  let items = todoService.store();
 
   onMount(async () => {
-    await todoService.requestList();
+    await todoService.list();
   });
 
   async function updateView() {
