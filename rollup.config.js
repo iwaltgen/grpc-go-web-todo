@@ -2,12 +2,13 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
+import replace from '@rollup/plugin-replace'
 import livereload from 'rollup-plugin-livereload';
+import filesize from 'rollup-plugin-filesize';
+import sveltePreprocess from 'svelte-preprocess';
 import {
   terser
 } from 'rollup-plugin-terser';
-import filesize from 'rollup-plugin-filesize';
-import sveltePreprocess from 'svelte-preprocess';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -50,6 +51,14 @@ export default {
         css.write('public/build/bundle.css');
       },
       preprocess: sveltePreprocess(),
+    }),
+
+    replace({
+      process: JSON.stringify({
+        env: {
+          ENABLE_GRPC_WEB_DEBUG: !production,
+        }
+      }),
     }),
 
     // If you have external dependencies installed from
