@@ -21,7 +21,7 @@ import (
 
 const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
-	version     = "0.0.1"
+	version     = "0.1.0"
 	ldflags     = "-ldflags=-s -w" +
 		" -X main.version=$VERSION" +
 		" -X main.commitHash=$COMMIT_HASH" +

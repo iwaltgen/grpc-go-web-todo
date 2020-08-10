@@ -4,20 +4,31 @@ Svelte TODO App with gRPC-WEB, gRPC-Go
 
 ## Prerequisites
 
-- **[Go][]**: any one of the **three latest major** [releases][go-releases].
-- **[Node][]**: any one of the **three latest major** [releases][node-download].
+- **[Go][]**: [latest releases][go-releases].
+- **[Node][]**: [latest releases][node-release].
 
-## Build
+## Development
 
-```sh
+[mkcert install](https://github.com/FiloSottile/mkcert#installation)
+
+```bash
+# root CA install
+mkcert -install
+
 # install package & tool
 mage install
 
-# build
+# generate api & code
+mage gen
+
+# livereload dev
+mage dev
+
+# build & embedding
 mage build
 ```
 
 [Go]: https://golang.org
 [Node]: https://nodejs.org
 [go-releases]: https://golang.org/doc/devel/release.html
-[node-download]: https://nodejs.org/en/download/
+[node-release]: https://nodejs.org/en/blog
