@@ -45,7 +45,7 @@
     "rollup-plugin-filesize": "^9.0.2",
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
-    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-terser": "^7.0.0",
     "sirv-cli": "^1.0.5",
     "svelte": "^3.0.0",
     "svelte-preprocess": "^4.0.0",
