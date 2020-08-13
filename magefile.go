@@ -3,20 +3,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
-	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/google/go-github/github"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
-	"golang.org/x/oauth2"
 )
 
 const (
@@ -144,6 +137,8 @@ func All() {
 // Install install package & tool
 func Install() error {
 	color.Green("install tools...")
+
+	color.Green("go get global...")
 	gg := gg{}
 	modules := []string{
 		"github.com/golang/protobuf/protoc-gen-go",
@@ -165,25 +160,22 @@ func Install() error {
 		}
 	}
 
-	gh := newGithub()
-	repos := []ghRepo{
-		{owner: "grpc", name: "grpc-web", target: "protoc-gen-grpc-web"},
-		{owner: "uber", name: "prototool", target: "prototool"},
-		// TODO(iwaltgen): protoc
-		// TODO(iwaltgen): golangci-lint
-		// TODO(iwaltgen): grpcurl
+	color.Green("install github release assets...")
+	gh := gh{}
+	repos := []ghdl{
+		{repo: "grpc/grpc-web", asset: "protoc-gen-grpc-web", target: "protoc-gen-grpc-web"},
+		{repo: "uber/prototool", asset: "prototool", target: "prototool"},
+		{repo: "protocolbuffers/protobuf", asset: "protoc", pick: "protoc"},
+		{repo: "golangci/golangci-lint", asset: "golangci-lint", pick: "golangci-lint"},
+		{repo: "fullstorydev/grpcurl", asset: "grpcurl", pick: "grpcurl"},
 	}
 	for _, v := range repos {
-		if err := gh.downloadLatestReleaseFile(v); err != nil {
+		if err := gh.downloadReleaseAsset(v); err != nil {
 			return err
 		}
 	}
 
-	if err := installLint(); err != nil {
-		return err
-	}
-
-	color.Green("install packages...")
+	color.Green("install npm packages...")
 	return sh.RunV("npm", "install")
 }
 
@@ -196,102 +188,41 @@ func (g gg) installModule(uri string) error {
 }
 
 // github
-type gh struct {
-	*github.Client
-}
+type gh struct{}
 
-func newGithub() gh {
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	return gh{github.NewClient(tc)}
-}
-
-type ghRepo struct {
-	owner  string
-	name   string
+type ghdl struct {
+	repo   string
+	asset  string
 	target string
+	pick   string
 }
 
-func (g gh) downloadLatestReleaseFile(repo ghRepo) error {
-	target := "bin/" + repo.target
-	if existsFile(target) {
+func (g gh) downloadReleaseAsset(target ghdl) error {
+	destination := "bin/" + target.target
+	if target.target == "" {
+		destination += target.pick
+	}
+	if existsFile(destination) {
 		return nil
 	}
 
-	ctx := context.Background()
-	release, _, err := g.Repositories.GetLatestRelease(ctx, repo.owner, repo.name)
+	err := sh.RunV("github-dl",
+		"--repo", target.repo,
+		"--asset", target.asset,
+		"--dest", "bin",
+		"--target", target.target,
+		"--pick", target.pick,
+	)
 	if err != nil {
 		return err
 	}
 
-	opt := &github.ListOptions{
-		Page:    1,
-		PerPage: 64,
-	}
-	assets, _, err := g.Repositories.ListReleaseAssets(ctx, repo.owner, repo.name, release.GetID(), opt)
-	if err != nil {
-		return err
-	}
-
-	os, _ := g.machineInfo()
-	arch := "x86_64"
-	for _, asset := range assets {
-		name := strings.ToLower(asset.GetName())
-		if strings.Contains(name, repo.target) && strings.Contains(name, os) {
-			archIndex := strings.LastIndex(name, arch)
-			if archIndex != -1 && (len(name)-archIndex == len(arch)) {
-				if err := g.downloadFile(asset.GetBrowserDownloadURL(), target); err != nil {
-					return err
-				}
-				if err := sh.RunV("chmod", "+x", target); err != nil {
-					return err
-				}
-			}
+	if target.target != "" {
+		if err := sh.RunV("chmod", "+x", destination); err != nil {
+			return err
 		}
 	}
 	return nil
-}
-
-func (g gh) downloadFile(url, filepath string) error {
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	return err
-}
-
-func installLint() error {
-	target := "bin/golangci-lint"
-	if existsFile(target) {
-		return nil
-	}
-
-	curl := exec.Command("curl", "-sSfL", "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh")
-	install := exec.Command("sh", "-s", "latest")
-	install.Stdin, _ = curl.StdoutPipe()
-	install.Stdout = os.Stdout
-
-	_ = install.Start()
-	_ = curl.Run()
-	return install.Wait()
-}
-
-func (g gh) machineInfo() (string, string) {
-	os, _ := sh.Output(goexe, "env", "GOOS")
-	arch, _ := sh.Output(goexe, "env", "GOARCH")
-	return os, arch
 }
 
 func existsFile(filepath string) bool {

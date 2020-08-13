@@ -9,7 +9,8 @@ Svelte TODO App with gRPC-WEB, gRPC-Go
 
 ## Development
 
-[mkcert install](https://github.com/FiloSottile/mkcert#installation)
+- [mkcert install](mkcert-install)
+- [github-dl install](github-dl-install)
 
 ```bash
 # root CA install
@@ -32,3 +33,5 @@ mage build
 [Node]: https://nodejs.org
 [go-releases]: https://golang.org/doc/devel/release.html
 [node-release]: https://nodejs.org/en/blog
+[mkcert-install]: https://github.com/FiloSottile/mkcert#installation
+[github-dl-install]: https://github.com/iwaltgen/github-dl#installation
