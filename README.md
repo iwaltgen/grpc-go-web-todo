@@ -9,8 +9,8 @@ Svelte TODO App with gRPC-WEB, gRPC-Go
 
 ## Development
 
-- [mkcert install](mkcert-install)
-- [github-dl install](github-dl-install)
+- [**mkcert** install](mkcert-install)
+- [**github-dl** install](github-dl-install)
 
 ```bash
 # root CA install
