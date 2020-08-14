@@ -151,6 +151,7 @@ func Install() error {
 		"github.com/google/wire/cmd/wire",
 		"github.com/rakyll/statik",
 		"github.com/mfridman/tparse",
+		"github.com/iwaltgen/github-dl",
 		"github.com/cosmtrek/air",
 	}
 	for _, v := range modules {

@@ -1,6 +1,6 @@
 # gRPC-Go-Web-TODO
 
-Svelte TODO App with gRPC-WEB, gRPC-Go
+Interactive TODO App powered by the gRPC-WEB server stream.
 
 ## Prerequisites
 
@@ -9,10 +9,12 @@ Svelte TODO App with gRPC-WEB, gRPC-Go
 
 ## Development
 
-- [**mkcert** install](mkcert-install)
-- [**github-dl** install](github-dl-install)
+- [**mkcert** install][mkcert-install]
 
 ```bash
+# on macOS
+brew install mkcert
+
 # root CA install
 mkcert -install
 
@@ -22,10 +24,10 @@ mage install
 # generate api & code
 mage gen
 
-# livereload dev
+# livereload development
 mage dev
 
-# build & embedding
+# build & embedding for a single binary
 mage build
 ```
 
@@ -34,4 +36,3 @@ mage build
 [go-releases]: https://golang.org/doc/devel/release.html
 [node-release]: https://nodejs.org/en/blog
 [mkcert-install]: https://github.com/FiloSottile/mkcert#installation
-[github-dl-install]: https://github.com/iwaltgen/github-dl#installation
