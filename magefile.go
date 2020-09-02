@@ -10,6 +10,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	"github.com/magefile/mage/target"
+	"github.com/mattn/go-zglob"
 )
 
 const (
@@ -48,15 +50,25 @@ func buildEnv() map[string]string {
 // Build build frontend & backend app
 func Build() error {
 	mg.Deps(Lint)
-
-	if err := sh.RunV("npm", "run", "build"); err != nil {
+	if err := buildFront(); err != nil {
 		return err
 	}
 
 	mg.Deps(GenStatic)
-
 	args := []string{"build", "-trimpath", ldflags, "-o", "./build/server", "./cmd/server"}
 	return sh.RunWith(buildEnv(), goexe, args...)
+}
+
+func buildFront() error {
+	changes, err := changesTarget("public/build/bundle.js", "src/**/*")
+	if err != nil {
+		return err
+	}
+	if !changes {
+		return nil
+	}
+
+	return sh.RunV("npm", "run", "build")
 }
 
 // Dev serve frontend & backend development
@@ -89,7 +101,7 @@ func Test() error {
 // Lint lint frontend & backend app
 func Lint() error {
 	// TODO(iwaltgen): svelte typescript support not yet
-	if err := sh.RunV("npm", "run", "lint"); err != nil {
+	if err := sh.RunV("npm", "run", "--silent", "lint"); err != nil {
 		return err
 	}
 
@@ -98,6 +110,14 @@ func Lint() error {
 
 // GenAPI generate API
 func GenAPI() error {
+	changes, err := changesTarget("api/todo/v1/todo.pb.go", "api/todo/v1/*.proto")
+	if err != nil {
+		return err
+	}
+	if !changes {
+		return nil
+	}
+
 	gopath, err := sh.Output(goexe, "env", "GOPATH")
 	if err != nil {
 		return err
@@ -115,18 +135,33 @@ func GenAPI() error {
 
 // GenWire generate wire code
 func GenWire() error {
+	changes, err := changesTarget("pkg/grpc/wire_gen.go", "pkg/**/wire.go")
+	if err != nil {
+		return err
+	}
+	if !changes {
+		return nil
+	}
+
 	return sh.RunV("wire", "./pkg/...")
 }
 
 // GenStatic generate frontend static resource for backend embed
 func GenStatic() error {
+	changes, err := changesTarget("pkg/server/statik", "public/**/*")
+	if err != nil {
+		return err
+	}
+	if !changes {
+		return nil
+	}
+
 	return sh.RunV(goexe, "generate", "./pkg/server/...")
 }
 
 // Gen generate API & embed resource
-func Gen() error {
+func Gen() {
 	mg.Deps(GenAPI, GenWire)
-	return sh.RunV(goexe, "generate", "./pkg/...")
 }
 
 // All generate, build app
@@ -228,4 +263,25 @@ func (g gh) downloadReleaseAsset(target ghdl) error {
 func existsFile(filepath string) bool {
 	_, err := os.Stat(filepath)
 	return !os.IsNotExist(err)
+}
+
+func changesTarget(dst string, globs ...string) (bool, error) {
+	for _, g := range globs {
+		files, err := zglob.Glob(g)
+		if err != nil {
+			return false, err
+		}
+		if len(files) == 0 {
+			return false, fmt.Errorf("glob didn't match any files: %s" + g)
+		}
+
+		shouldDo, err := target.Path(dst, files...)
+		if err != nil {
+			return false, err
+		}
+		if shouldDo {
+			return true, nil
+		}
+	}
+	return false, nil
 }
