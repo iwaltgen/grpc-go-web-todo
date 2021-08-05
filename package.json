@@ -27,7 +27,7 @@
   "homepage": "https://github.com/iwaltgen/grpc-go-web-todo#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-node-resolve": "^8.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^2.3.3",
     "@rollup/plugin-typescript": "^4.0.0",
     "@tsconfig/svelte": "^1.0.0",
