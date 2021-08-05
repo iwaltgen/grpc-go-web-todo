@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.9.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/gogo/status v1.1.0
-	github.com/google/wire v0.4.0
+	github.com/google/wire v0.5.0
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/improbable-eng/grpc-web v0.13.0
