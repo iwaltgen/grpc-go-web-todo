@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
-	github.com/fatih/color v1.9.0
+	github.com/fatih/color v1.12.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
 	github.com/google/wire v0.5.0
