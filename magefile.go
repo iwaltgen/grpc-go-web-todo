@@ -95,6 +95,10 @@ func Build() error {
 	mg.Deps(Lint)
 	mg.Deps(GEN.API)
 
+	if err := os.MkdirAll(targetDir, os.ModePerm); err != nil {
+		return err
+	}
+
 	b := BUILD{}
 	if err := b.Front(); err != nil {
 		return err
