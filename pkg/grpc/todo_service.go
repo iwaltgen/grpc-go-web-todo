@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/gogo/protobuf/types"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/entity"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/event"
@@ -17,6 +17,7 @@ import (
 )
 
 type todoService struct {
+	todov1.UnimplementedTodoServiceServer
 	logger      *log.Logger
 	todoUsecase *usecase.Todo
 }
@@ -57,31 +58,31 @@ func (s *todoService) ListTodos(ctx context.Context, req *todov1.ListTodosReques
 	}, nil
 }
 
-func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*types.Empty, error) {
+func (s *todoService) CreateTodo(ctx context.Context, req *todov1.CreateTodoRequest) (*emptypb.Empty, error) {
 	err := s.todoUsecase.CreateTodo(ctx, message.TodoFromProto(req.Todo))
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *todoService) UpdateTodo(ctx context.Context, req *todov1.UpdateTodoRequest) (*types.Empty, error) {
+func (s *todoService) UpdateTodo(ctx context.Context, req *todov1.UpdateTodoRequest) (*emptypb.Empty, error) {
 	err := s.todoUsecase.UpdateTodo(ctx, message.TodoFromProto(req.Todo))
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequest) (*types.Empty, error) {
+func (s *todoService) DeleteTodo(ctx context.Context, req *todov1.DeleteTodoRequest) (*emptypb.Empty, error) {
 	err := s.todoUsecase.DeleteTodo(ctx, req.TodoId)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *todoService) SubscribeEvent(req *todov1.SubscribeEventRequest,

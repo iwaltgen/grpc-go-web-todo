@@ -1,0 +1,65 @@
+run:
+  deadline: 10m
+  tests: false
+  skip-dirs:
+  - api
+  - bin
+  - build
+  - configs
+  - docker
+  - docs
+  - scripts
+  - tools
+
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - govet
+    - revive
+    - errcheck
+    - unconvert
+    - staticcheck
+    - ineffassign
+    - unparam
+    - deadcode
+    - misspell
+
+issues:
+  exclude-use-default: false
+
+  exclude-rules:
+    # https://staticcheck.io/docs/checks#SA9004
+    - linters: [staticcheck]
+      text: 'SA9004:'
+
+    # https://staticcheck.io/docs/checks#SA1019
+    - linters: [staticcheck]
+      text: 'SA1019:'
+      path: 'status.go'
+
+    - linters: [unparam]
+      text: 'always receives'
+
+    - linters: [unparam]
+      text: 'result \d+ \(error\) is always nil'
+
+    - linters: [unparam]
+      text: '`_[^`]*` is unused'
+
+    - linters: [unparam]
+      text: '`(t|resp|req|entMeta)` is unused'
+
+    - linters: [unparam]
+      path: '(_test.go|.pb.go|_gen.go)'
+
+    - linters: [revive]
+      text: 'ToSql'
+
+linters-settings:
+  gofmt:
+    simplify: true
+  errcheck:
+    check-type-assertions: false
+  govet:
+    check-shadowing: false

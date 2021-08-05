@@ -5,9 +5,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/gogo/status"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/status"
 )
 
 // Field is an alias for Field. Aliasing this type dramatically
@@ -232,7 +232,7 @@ func ExtractField(f Field) (string, interface{}) {
 		return f.Key, f.Interface
 
 	case zapcore.Int64Type:
-		return f.Key, int64(f.Integer)
+		return f.Key, f.Integer
 
 	case zapcore.Int32Type,
 		zapcore.Int16Type,

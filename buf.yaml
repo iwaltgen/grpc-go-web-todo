@@ -1,0 +1,14 @@
+version: v1beta1
+build:
+  roots:
+    - api
+lint:
+  use:
+    - DEFAULT
+  ignore:
+    - google
+    - envoyproxy
+  rpc_allow_google_protobuf_empty_responses: true
+breaking:
+  use:
+    - PACKAGE

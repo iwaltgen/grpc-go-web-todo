@@ -5,8 +5,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
+	"path/filepath"
+	"runtime"
+	"strings"
 	"time"
 
+	"github.com/bitfield/script"
 	"github.com/fatih/color"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -16,50 +21,89 @@ import (
 
 const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
-	version     = "0.1.0"
-	ldflags     = "-ldflags=-s -w" +
-		" -X main.version=$VERSION" +
-		" -X main.commitHash=$COMMIT_HASH" +
-		" -X main.buildDate=$BUILD_DATE"
+	version     = "0.1.1"
+	targetDir   = "build"
+	binaryDir   = "bin"
+)
+
+type (
+	API     mg.Namespace
+	GEN     mg.Namespace
+	BUILD   mg.Namespace
+	VERSION mg.Namespace
+	DEV     mg.Namespace
 )
 
 var (
-	goexe = "go"
-	git   = sh.RunCmd("git")
-
-	workspace = packageName
-	started   = time.Now().Unix()
+	started       int64
+	gocmd, gitcmd func(args ...string) error
+	workspace     string
 )
 
 func init() {
-	goexe = mg.GoCmd()
+	started = time.Now().Unix()
+	gocmd = sh.RunCmd(mg.GoCmd())
+	gitcmd = sh.RunCmd("git")
 	workspace, _ = os.Getwd()
 }
 
-func buildEnv() map[string]string {
-	hash, _ := sh.Output("git", "rev-parse", "--verify", "HEAD")
-	return map[string]string{
-		"PACKAGE":     packageName,
-		"WORKSPACE":   workspace,
-		"VERSION":     version,
-		"COMMIT_HASH": hash,
-		"BUILD_DATE":  fmt.Sprintf("%d", started),
-	}
-}
-
-// Build build frontend & backend app
-func Build() error {
-	mg.Deps(Lint)
-	if err := buildFront(); err != nil {
+// Run lint frontend & backend app
+func Lint() error {
+	// TODO(iwaltgen): svelte typescript support not yet
+	if err := sh.RunV("npm", "run", "lint"); err != nil {
 		return err
 	}
 
-	mg.Deps(GenStatic)
-	args := []string{"build", "-trimpath", ldflags, "-o", "./build/server", "./cmd/server"}
-	return sh.RunWith(buildEnv(), goexe, args...)
+	return sh.RunV("golangci-lint", "run")
 }
 
-func buildFront() error {
+// Run test frontend & backend app
+func Test() error {
+	mg.Deps(Lint)
+	mg.Deps(GEN.API)
+
+	output, err := sh.Output(mg.GoCmd(), "list", "./...")
+	if err != nil {
+		return fmt.Errorf("failed to go list: %w", err)
+	}
+
+	var pkgs []string
+	for _, line := range strings.Split(output, "\n") {
+		if !strings.Contains(line, "infra") {
+			pkgs = append(pkgs, line)
+		}
+	}
+
+	return execPipeCmdsStdout(
+		fmt.Sprintf("go test %s -timeout 10s -race -cover -json", strings.Join(pkgs, "\n")),
+		"tparse -all",
+	)
+}
+
+// Run dev serve frontend & backend development
+func Dev() error {
+	mg.Deps(Build)
+
+	go func() {
+		_ = sh.RunV("npm", "run", "dev")
+	}()
+	return sh.RunV("server")
+}
+
+// Build frontend & backend app
+func Build() error {
+	mg.Deps(Lint)
+	mg.Deps(GEN.API)
+
+	b := BUILD{}
+	if err := b.Front(); err != nil {
+		return err
+	}
+
+	return sh.RunWith(b.buildEnv(), mg.GoCmd(), b.buildParameters()...)
+}
+
+func (BUILD) Front() error {
 	changes, err := changesTarget("public/build/bundle.js", "src/**/*")
 	if err != nil {
 		return err
@@ -71,84 +115,75 @@ func buildFront() error {
 	return sh.RunV("npm", "run", "build")
 }
 
-// Dev serve frontend & backend development
-func Dev() error {
-	mg.Deps(Lint)
-
-	go func() {
-		_ = sh.RunV("npm", "run", "dev")
-	}()
-	return sh.RunV("air")
+func (BUILD) buildParameters() []string {
+	ldflags := "-ldflags=" +
+		"-X $PACKAGE/pkg/version.version=$VERSION " +
+		"-X $PACKAGE/pkg/version.commitHash=$COMMIT_HASH " +
+		"-X $PACKAGE/pkg/version.buildDate=$BUILD_DATE"
+	return []string{"build", "-trimpath", ldflags, "-o", targetDir, "./cmd/..."}
 }
 
-// BuildDev build backend for development
-func BuildDev() error {
-	args := []string{"build", "-trimpath", ldflags, "-o", "./tmp/server", "./cmd/server"}
-	return sh.RunWith(buildEnv(), goexe, args...)
+func (BUILD) buildEnv() map[string]string {
+	var hash string
+	if gitsha := os.Getenv("GITHUB_SHA"); gitsha != "" {
+		hash = gitsha
+	} else {
+		hash, _ = sh.Output("git", "rev-parse", "--verify", "HEAD")
+	}
+
+	return map[string]string{
+		"CGO_ENABLED": "0",
+		"PACKAGE":     packageName,
+		"WORKSPACE":   workspace,
+		"VERSION":     version,
+		"COMMIT_HASH": hash,
+		"BUILD_DATE":  fmt.Sprintf("%d", started),
+	}
 }
 
-// Clean clean build artifacts
+// Clean build artifacts
 func Clean() {
 	_ = sh.Rm("public/build")
 	_ = sh.Rm("build")
 }
 
-// Test test frontend & backend app
-func Test() error {
-	return sh.RunV("sh", "-c", "go test ./pkg/... -cover -json | tparse -all")
+// Generate API
+func (GEN) API() {
+	mg.Deps(API.Gen)
 }
 
-// Lint lint frontend & backend app
-func Lint() error {
-	// TODO(iwaltgen): svelte typescript support not yet
-	if err := sh.RunV("npm", "run", "--silent", "lint"); err != nil {
-		return err
-	}
-
-	return sh.RunV("golangci-lint", "run", "--timeout", "3m", "-E", "misspell")
-}
-
-// GenAPI generate API
-func GenAPI() error {
-	changes, err := changesTarget("api/todo/v1/todo.pb.go", "api/todo/v1/*.proto")
-	if err != nil {
-		return err
-	}
-	if !changes {
-		return nil
-	}
-
-	gopath, err := sh.Output(goexe, "env", "GOPATH")
-	if err != nil {
-		return err
-	}
-
-	env := map[string]string{
-		"PROTOTOOL_PROTOC_BIN_PATH": "bin/protoc",
-		"PROTOTOOL_PROTOC_WKT_PATH": gopath + "/src/github.com/gogo/protobuf/protobuf",
-	}
-	if err := sh.RunWith(env, "prototool", "lint"); err != nil {
-		return err
-	}
-	return sh.RunWith(env, "prototool", "generate")
-}
-
-// GenWire generate wire code
-func GenWire() error {
-	changes, err := changesTarget("pkg/grpc/wire_gen.go", "pkg/**/wire.go")
-	if err != nil {
-		return err
-	}
-	if !changes {
-		return nil
-	}
-
+// Generate wire code
+func (GEN) Wire() error {
 	return sh.RunV("wire", "./pkg/...")
 }
 
-// GenStatic generate frontend static resource for backend embed
-func GenStatic() error {
-	changes, err := changesTarget("pkg/server/statik", "public/**/*")
+// Generate helper code
+func (GEN) Code() error {
+	return sh.RunV("go", "generate", "./pkg/...")
+}
+
+// Generate API & code & resource
+func Gen() {
+	mg.Deps(GEN.Code)
+	mg.Deps(GEN.Wire)
+	mg.Deps(GEN.API)
+}
+
+// Check lint API
+func (API) Lint() error {
+	return sh.RunV("buf", "lint")
+}
+
+// Check breaking API
+func (API) Breaking() error {
+	tag := "v" + version
+	return sh.RunV("buf", "breaking", "--against", ".git#tag="+tag)
+}
+
+// Generate API code
+func (API) Gen() error {
+	mg.Deps(API.Lint)
+	changes, err := changesTarget("api/todo/v1/event.pb.go", "api/todo/**/*.proto")
 	if err != nil {
 		return err
 	}
@@ -156,56 +191,74 @@ func GenStatic() error {
 		return nil
 	}
 
-	return sh.RunV(goexe, "generate", "./pkg/server/...")
-}
+	files, err := zglob.Glob("api/todo/**/*.proto")
+	if err != nil {
+		return err
+	}
 
-// Gen generate API & embed resource
-func Gen() {
-	mg.Deps(GenAPI, GenWire)
-}
-
-// All generate, build app
-func All() {
-	mg.Deps(Lint, Test, Build)
+	return sh.RunV("buf", "generate", "--path", strings.Join(files, ","))
 }
 
 // Install install package & tool
 func Install() error {
-	color.Green("install tools...")
-
-	color.Green("go get global...")
-	gg := gg{}
-	modules := []string{
-		"github.com/golang/protobuf/protoc-gen-go",
-		"github.com/gogo/protobuf/protoc-gen-gogo",
-		"github.com/gogo/protobuf/protoc-gen-gofast",
-		"github.com/gogo/protobuf/protoc-gen-gogofast",
-		"github.com/gogo/protobuf/protoc-gen-gogofaster",
-		"github.com/gogo/protobuf/protoc-gen-gogoslick",
-		"golang.org/x/tools/cmd/stringer",
+	color.Green("install go tools...")
+	err := gocmd("install",
+		"github.com/bufbuild/buf/cmd/buf",
+		"github.com/bufbuild/buf/cmd/protoc-gen-buf-check-breaking",
+		"github.com/bufbuild/buf/cmd/protoc-gen-buf-check-lint",
+		"github.com/envoyproxy/protoc-gen-validate",
+		"github.com/fullstorydev/grpcurl/cmd/grpcurl",
+		"github.com/golangci/golangci-lint/cmd/golangci-lint",
 		"github.com/google/wire/cmd/wire",
-		"github.com/rakyll/statik",
+		"github.com/magefile/mage",
 		"github.com/mfridman/tparse",
-		"github.com/iwaltgen/github-dl",
-		"github.com/cosmtrek/air",
+		"golang.org/x/tools/cmd/stringer",
+		"google.golang.org/grpc/cmd/protoc-gen-go-grpc",
+		"google.golang.org/protobuf/cmd/protoc-gen-go",
+	)
+	if err != nil {
+		return err
 	}
-	for _, v := range modules {
-		if err := gg.installModule(v); err != nil {
+
+	color.Green("install github release binary tools...")
+	if err := os.MkdirAll(filepath.Dir(binaryDir), os.ModePerm); err != nil {
+		return err
+	}
+
+	ghfiles := []struct {
+		api, pattern, rename string
+	}{
+		{
+			api:     "https://api.github.com/repos/grpc/grpc-web/releases/latest",
+			pattern: ".+{{.os}}.+x86_64$",
+			rename:  "protoc-gen-grpc-web",
+		},
+	}
+
+	for _, v := range ghfiles {
+		pattern := strings.ReplaceAll(v.pattern, "{{.os}}", runtime.GOOS)
+		res := execPipeCmds(
+			fmt.Sprintf("curl -fsSL %s", v.api),
+			fmt.Sprintf(`jq -r '.assets[] | select(.name | test("%s")) | .browser_download_url'`, pattern),
+		)
+
+		output, err := res.String()
+		if err != nil {
 			return err
 		}
-	}
 
-	color.Green("install github release assets...")
-	gh := gh{}
-	repos := []ghdl{
-		{repo: "grpc/grpc-web", asset: "protoc-gen-grpc-web", target: "protoc-gen-grpc-web"},
-		{repo: "uber/prototool", asset: "prototool", target: "prototool"},
-		{repo: "protocolbuffers/protobuf", asset: "protoc", pick: "protoc"},
-		{repo: "golangci/golangci-lint", asset: "golangci-lint", pick: "golangci-lint"},
-		{repo: "fullstorydev/grpcurl", asset: "grpcurl", pick: "grpcurl"},
-	}
-	for _, v := range repos {
-		if err := gh.downloadReleaseAsset(v); err != nil {
+		filename := path.Base(output)
+		target := filepath.Join(binaryDir, filename)
+		if err := sh.RunV("curl", "-fsSL", "-o", target, strings.Trim(output, "\n")); err != nil {
+			return err
+		}
+
+		rtarget := filepath.Join(binaryDir, v.rename)
+		if err := os.Rename(target, rtarget); err != nil {
+			return err
+		}
+
+		if err := sh.RunV("chmod", "+x", rtarget); err != nil {
 			return err
 		}
 	}
@@ -214,55 +267,72 @@ func Install() error {
 	return sh.RunV("npm", "install")
 }
 
-// get get
-type gg struct{}
-
-func (g gg) installModule(uri string) error {
-	env := map[string]string{"GO111MODULE": "off"}
-	return sh.RunWith(env, goexe, "get", uri)
-}
-
-// github
-type gh struct{}
-
-type ghdl struct {
-	repo   string
-	asset  string
-	target string
-	pick   string
-}
-
-func (g gh) downloadReleaseAsset(target ghdl) error {
-	destination := "bin/" + target.target
-	if target.target == "" {
-		destination += target.pick
-	}
-	if existsFile(destination) {
-		return nil
+// Update 3rd party proto files
+func Update3rdPartyProto() error {
+	protos := []struct {
+		remote, local string
+	}{
+		{
+			remote: "https://raw.githubusercontent.com/envoyproxy/protoc-gen-validate/master/validate/validate.proto",
+			local:  "api/envoyproxy/pgv/validate.proto",
+		},
+		{
+			remote: "https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/code.proto",
+			local:  "api/google/rpc/code.proto",
+		},
+		{
+			remote: "https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/error_details.proto",
+			local:  "api/google/rpc/error_details.proto",
+		},
+		{
+			remote: "https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/status.proto",
+			local:  "api/google/rpc/status.proto",
+		},
 	}
 
-	err := sh.RunV("github-dl",
-		"--repo", target.repo,
-		"--asset", target.asset,
-		"--dest", "bin",
-		"--target", target.target,
-		"--pick", target.pick,
-	)
-	if err != nil {
-		return err
-	}
+	for _, v := range protos {
+		if err := os.MkdirAll(filepath.Dir(v.local), os.ModePerm); err != nil {
+			return err
+		}
 
-	if target.target != "" {
-		if err := sh.RunV("chmod", "+x", destination); err != nil {
+		if err := sh.RunV("curl", "-fsSL", "-o", v.local, v.remote); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func existsFile(filepath string) bool {
-	_, err := os.Stat(filepath)
-	return !os.IsNotExist(err)
+func execPipeCmdsStdout(cmds ...string) error {
+	pipe := execPipeCmds(cmds...)
+	if pipe == nil {
+		return nil
+	}
+
+	_, err := pipe.Stdout()
+	return err
+}
+
+func execPipeCmds(cmds ...string) *script.Pipe {
+	if len(cmds) < 1 {
+		return nil
+	}
+
+	pipe := script.NewPipe()
+	for _, cmd := range cmds {
+		pipe = pipe.Exec(cmd)
+		pipe.SetError(nil)
+	}
+	return pipe
+}
+
+func replaceTextInFile(path, old, new string) error {
+	read, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("failed to read file: %w", err)
+	}
+
+	newContents := strings.Replace(string(read), old, new, -1)
+	return os.WriteFile(path, []byte(newContents), 0)
 }
 
 func changesTarget(dst string, globs ...string) (bool, error) {
@@ -272,7 +342,7 @@ func changesTarget(dst string, globs ...string) (bool, error) {
 			return false, err
 		}
 		if len(files) == 0 {
-			return false, fmt.Errorf("glob didn't match any files: %s" + g)
+			return false, fmt.Errorf("failed to glob didn't match any files: %s" + g)
 		}
 
 		shouldDo, err := target.Path(dst, files...)

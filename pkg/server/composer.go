@@ -25,7 +25,9 @@ func (s *Composer) Serve(ctx context.Context) {
 	if err != nil {
 		s.logger.Warn("new opentracing tracer error", log.Error(err))
 	}
-	defer closer.Close()
+	defer func() {
+		_ = closer.Close()
+	}()
 	opentracing.SetGlobalTracer(tracer)
 
 	type server interface {

@@ -5,8 +5,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/gogo/status"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/entity"
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/event"

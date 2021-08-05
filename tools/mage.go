@@ -1,4 +1,4 @@
-#!/usr/bin/env gorun
+// +build ignore
 
 package main
 
