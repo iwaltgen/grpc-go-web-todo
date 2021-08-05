@@ -2,6 +2,18 @@
 
 Interactive TODO App powered by the gRPC-WEB server stream.
 
+```
+    +----------Browser----------+                 +----------Backend----------+
+    |                           |                 |                           |
+    |                           |                 |    static file serving    |
+    |                           |                 |                           |
+    |         gRPC-Web          | <-- HTTP/2 -->  | gRPC-Web in-process-proxy |
+    |                           |                 |                           |
+    |                           |                 |          gRPC-go          |
+    |                           |                 |                           |
+    +---------------------------+                 +---------------------------+
+```
+
 ## Prerequisites
 
 - **[Go][]**: [latest releases][go-releases].
@@ -11,7 +23,7 @@ Interactive TODO App powered by the gRPC-WEB server stream.
 
 - [**mkcert** install][mkcert-install]
 
-```bash
+```sh
 # on macOS
 brew install mkcert
 
