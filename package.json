@@ -39,7 +39,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-rxjs": "0.0.2-beta.28",
     "eslint-plugin-svelte3": "^2.7.3",
-    "prettier": "2.0.5",
+    "prettier": "2.3.2",
     "prettier-plugin-svelte": "^1.1.0",
     "rollup": "^2.3.4",
     "rollup-plugin-filesize": "^9.0.2",
