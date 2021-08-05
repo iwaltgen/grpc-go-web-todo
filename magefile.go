@@ -225,7 +225,7 @@ func Install() error {
 	}
 
 	color.Green("install github release binary tools...")
-	if err := os.MkdirAll(filepath.Dir(binaryDir), os.ModePerm); err != nil {
+	if err := os.MkdirAll(binaryDir, os.ModePerm); err != nil {
 		return err
 	}
 
@@ -251,18 +251,19 @@ func Install() error {
 			return err
 		}
 
-		filename := path.Base(output)
+		source := strings.Trim(output, "\n")
+		filename := path.Base(source)
 		target := filepath.Join(binaryDir, filename)
-		if err := sh.RunV("curl", "-fsSL", "-o", target, strings.Trim(output, "\n")); err != nil {
+		if err := sh.RunV("curl", "-fsSL", "-o", target, source); err != nil {
 			return err
 		}
 
-		rtarget := filepath.Join(binaryDir, v.rename)
-		if err := os.Rename(target, rtarget); err != nil {
+		dest := filepath.Join(binaryDir, v.rename)
+		if err := os.Rename(target, dest); err != nil {
 			return err
 		}
 
-		if err := sh.RunV("chmod", "+x", rtarget); err != nil {
+		if err := sh.RunV("chmod", "+x", dest); err != nil {
 			return err
 		}
 	}
