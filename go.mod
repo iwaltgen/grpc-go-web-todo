@@ -21,7 +21,6 @@ require (
 	github.com/mattn/go-zglob v0.0.3
 	github.com/mfridman/tparse v0.8.3
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/rakyll/statik v0.1.7
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	go.uber.org/atomic v1.9.0

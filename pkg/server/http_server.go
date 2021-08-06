@@ -1,5 +1,3 @@
-//go:generate statik -ns=server.http -src=../../public -include=*.jpg,*.png,*.html,*.css,*.js
-
 package server
 
 import (
@@ -14,11 +12,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/opentracing/opentracing-go"
-	"github.com/rakyll/statik/fs"
 	"google.golang.org/grpc"
 
 	"github.com/iwaltgen/grpc-go-web-todo/pkg/log"
-	_ "github.com/iwaltgen/grpc-go-web-todo/pkg/server/statik" // frontend embedded resource
 )
 
 // HTTP HTTP Server
@@ -57,15 +53,9 @@ func NewHTTP(gsrv *grpc.Server) (hsrv *HTTP) {
 	logger.Info("enable middleware", log.String("type", "logger"))
 	logger.Info("enable middleware", log.String("type", "recovery"))
 
-	statikFS, err := fs.NewWithNamespace("server.http")
-	if err != nil {
-		logger.Panic("new statik file system error", log.Error(err))
-	}
-
 	gwsrv := grpcweb.WrapServer(gsrv, hsrv.withAllowAllOrigins())
 	e.POST("/*", echo.WrapHandler(gwsrv))
 	e.OPTIONS("/*", echo.WrapHandler(gwsrv))
-	e.GET("/*", echo.WrapHandler(http.FileServer(statikFS)))
 	return hsrv
 }
 
