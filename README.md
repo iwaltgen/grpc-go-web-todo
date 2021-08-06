@@ -1,6 +1,6 @@
 # gRPC-Go-Web-TODO
 
-![build](https://github.com/iwaltgen/grpc-go-web-todo/workflows/build/badge.svg)
+[![build](https://github.com/iwaltgen/grpc-go-web-todo/actions/workflows/build.yml/badge.svg)](https://github.com/iwaltgen/grpc-go-web-todo/actions/workflows/build.yml)
 
 Interactive TODO App powered by the gRPC-WEB server stream.
 
