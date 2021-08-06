@@ -104,7 +104,7 @@ func Build() error {
 		return err
 	}
 
-	return sh.RunWith(b.buildEnv(), mg.GoCmd(), b.buildParameters()...)
+	return b.Backend()
 }
 
 func (BUILD) Front() error {
@@ -117,6 +117,10 @@ func (BUILD) Front() error {
 	}
 
 	return npmcmd("run", "build")
+}
+
+func (b BUILD) Backend() error {
+	return sh.RunWith(b.buildEnv(), mg.GoCmd(), b.buildParameters()...)
 }
 
 func (BUILD) buildParameters() []string {
