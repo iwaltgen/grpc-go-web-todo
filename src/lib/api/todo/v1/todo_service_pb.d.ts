@@ -1,8 +1,9 @@
-import * as jspb from "google-protobuf"
+import * as jspb from 'google-protobuf'
 
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
 import * as todo_v1_todo_pb from '../../todo/v1/todo_pb';
 import * as todo_v1_event_pb from '../../todo/v1/event_pb';
+
 
 export class ListTodosRequest extends jspb.Message {
   serializeBinary(): Uint8Array;

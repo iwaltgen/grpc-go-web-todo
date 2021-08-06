@@ -1,6 +1,11 @@
-node_modules
-public
-src/api/**/*
-.eslintrc.js
-.prettierrc.js
-rollup.config.js
+.github/**
+.vscode/**
+node_modules/**
+public/**
+src/lib/api/**/*
+.svelte-kit/**
+static/**
+build/**
+.golangci.yml
+buf*.yaml
+.eslintrc.cjs

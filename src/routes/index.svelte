@@ -1,6 +1,10 @@
+<script context="module" lang="ts">
+  export const prerender = true;
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { todoService, uuid } from './usecase';
+  import { todoService, uuid } from '$lib/usecase';
 
   const ENTER_KEY = 13;
   const ESCAPE_KEY = 27;
@@ -108,21 +112,27 @@
       class="toggle-all"
       type="checkbox"
       on:change={toggleAll}
-      checked={numCompleted === $items.length} />
+      checked={numCompleted === $items.length}
+    />
     <label for="toggle-all">Mark all as complete</label>
 
     <ul class="todo-list">
       {#each filtered as item, index (item.id)}
         <li class="{item.completed ? 'completed' : ''} {editing === index ? 'editing' : ''}">
           <div class="view">
-            <input class="toggle" type="checkbox" bind:checked={item.completed} on:change={() => toggle(index)} />
-            <label on:dblclick={() => (editing = index)}>{item.description}</label>
+            <input
+              id="toggle-{item.id}"
+              class="toggle"
+              type="checkbox"
+              bind:checked={item.completed}
+              on:change={() => toggle(index)}
+            />
+            <label for="toggle-{item.id}" on:dblclick={() => (editing = index)}>{item.description}</label>
             <button on:click={() => remove(index)} class="destroy" />
           </div>
 
-          <!-- svelte-ignore a11y-autofocus -->
           {#if editing === index}
-            <input value={item.description} id="edit" class="edit" on:keydown={handleEdit} on:blur={submit} autofocus />
+            <input value={item.description} id="edit" class="edit" on:keydown={handleEdit} on:blur={submit} />
           {/if}
         </li>
       {/each}

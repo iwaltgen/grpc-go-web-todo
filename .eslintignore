@@ -1,6 +1,4 @@
 node_modules
-public
-src/api/**/*
-.eslintrc.js
-.prettierrc.js
-rollup.config.js
+static/**
+src/lib/api/**
+.eslintrc.cjs

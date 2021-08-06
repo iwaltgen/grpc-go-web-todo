@@ -1,5 +1,6 @@
 {
-  "clang-format.style": "{BasedOnStyle: google, ColumnLimit: 120}",
+  "go.lintTool": "golangci-lint",
+  "go.testTimeout": "3s",
   "protoc": {
     "options": [
       "--proto_path=api",
