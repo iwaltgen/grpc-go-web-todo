@@ -334,16 +334,6 @@ func execPipeCmds(cmds ...string) *script.Pipe {
 	return pipe
 }
 
-func replaceTextInFile(path, old, new string) error {
-	read, err := os.ReadFile(path)
-	if err != nil {
-		return fmt.Errorf("failed to read file: %w", err)
-	}
-
-	newContents := strings.Replace(string(read), old, new, -1)
-	return os.WriteFile(path, []byte(newContents), 0)
-}
-
 func changesTarget(dst string, globs ...string) (bool, error) {
 	for _, g := range globs {
 		files, err := zglob.Glob(g)
