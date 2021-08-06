@@ -47,7 +47,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@fontsource/fira-mono": "^4.2.2",
     "google-protobuf": "^3.17.3",
     "grpc-web": "^1.2.1",
     "rxjs": "^7.3.0"
