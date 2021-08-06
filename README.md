@@ -33,13 +33,10 @@ mkcert -install
 # install package & tool
 mage install
 
-# generate api & code
-mage gen
-
-# livereload development
+# dev mode
 mage dev
 
-# build & embedding for a single binary
+# prod build
 mage build
 ```
 
