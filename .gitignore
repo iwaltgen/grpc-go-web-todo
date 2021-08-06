@@ -20,6 +20,9 @@ node_modules/
 bin/*
 build/*
 tmp/*
+/.svelte-kit
+/package
+
 
 # dev artifact
 public/build/

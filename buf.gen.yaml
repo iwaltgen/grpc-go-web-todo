@@ -9,4 +9,9 @@ plugins:
   - name: validate
     out: api
     opt: paths=source_relative,lang=go
-
+  - name: js
+    out: src/lib/api
+    opt: import_style=commonjs,binary
+  - name: grpc-web
+    out: src/lib/api
+    opt: import_style=typescript,mode=grpcwebtext

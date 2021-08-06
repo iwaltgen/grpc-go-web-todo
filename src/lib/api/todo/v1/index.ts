@@ -9,4 +9,4 @@ export {
 } from './todo_service_pb';
 export { Todo } from './todo_pb';
 export { Event } from './event_pb';
-export { TodoServiceClient } from './todo_service_grpc_web_pb';
+export { TodoServiceClient } from './Todo_serviceServiceClientPb';

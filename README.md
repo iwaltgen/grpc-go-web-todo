@@ -43,8 +43,8 @@ mage dev
 mage build
 ```
 
-[Go]: https://golang.org
-[Node]: https://nodejs.org
+[go]: https://golang.org
+[node]: https://nodejs.org
 [go-releases]: https://golang.org/doc/devel/release.html
 [node-release]: https://nodejs.org/en/blog
 [mkcert-install]: https://github.com/FiloSottile/mkcert#installation
