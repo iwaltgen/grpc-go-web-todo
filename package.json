@@ -35,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
     "eslint": "^7.32.0",
-    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-rxjs": "0.0.2-beta.28",
     "eslint-plugin-svelte3": "^3.2.0",
