@@ -1,4 +1,11 @@
-export {
+import * as eventModule from './event_pb';
+export const { Event } = eventModule;
+
+import * as todoModule from './todo_pb';
+export const { Todo } = todoModule;
+
+import * as todoServiceModule from './todo_service_pb';
+export const {
   ListTodosRequest,
   ListTodosResponse,
   CreateTodoRequest,
@@ -6,7 +13,6 @@ export {
   DeleteTodoRequest,
   SubscribeEventRequest,
   SubscribeEventResponse,
-} from './todo_service_pb';
-export { Todo } from './todo_pb';
-export { Event } from './event_pb';
+} = todoServiceModule;
+
 export { TodoServiceClient } from './Todo_serviceServiceClientPb';

@@ -85,7 +85,7 @@ func Dev() error {
 	mg.Deps(Build)
 
 	go func() {
-		_ = sh.RunV("npm", "run", "dev")
+		_ = sh.RunV("npm", "run", "dev", "--", "--open")
 	}()
 	return sh.RunV("server")
 }
