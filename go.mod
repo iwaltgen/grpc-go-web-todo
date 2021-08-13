@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/bitfield/script v0.18.0
-	github.com/bufbuild/buf v0.49.0
+	github.com/bufbuild/buf v0.50.0
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/fatih/color v1.12.0
@@ -25,6 +25,7 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.19.0
+	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
 	golang.org/x/tools v0.1.5
 	google.golang.org/grpc v1.41.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
