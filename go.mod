@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/bitfield/script v0.18.0
-	github.com/bufbuild/buf v0.50.0
+	github.com/bufbuild/buf v0.51.0
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/fatih/color v1.12.0
