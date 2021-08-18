@@ -9,7 +9,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/fatih/color v1.12.0
 	github.com/fullstorydev/grpcurl v1.8.2
-	github.com/golangci/golangci-lint v1.41.1
+	github.com/golangci/golangci-lint v1.42.0
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/iancoleman/strcase v0.2.0 // indirect
