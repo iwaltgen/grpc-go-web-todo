@@ -19,6 +19,11 @@ import (
 	"github.com/mattn/go-zglob"
 )
 
+// TODO(iwaltgen): apply https://github.com/looplab/eventhorizon
+// TODO(iwaltgen): remove curl, jq
+// https://github.com/go-resty/resty
+// https://github.com/tidwall/gjson
+
 const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
 	version     = "0.1.1"
