@@ -6,7 +6,7 @@ require (
 	github.com/bitfield/script v0.18.0
 	github.com/bufbuild/buf v0.53.0
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
-	github.com/fatih/color v1.12.0
+	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golangci/golangci-lint v1.42.0
