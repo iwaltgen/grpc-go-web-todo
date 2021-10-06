@@ -15,7 +15,7 @@ require (
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/labstack/echo-contrib v0.11.0
-	github.com/labstack/echo/v4 v4.5.0
+	github.com/labstack/echo/v4 v4.6.1
 	github.com/lyft/protoc-gen-star v0.5.3 // indirect
 	github.com/magefile/mage v1.11.0
 	github.com/mattn/go-zglob v0.0.3
