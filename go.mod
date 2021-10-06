@@ -22,7 +22,7 @@ require (
 	github.com/mfridman/tparse v0.8.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/stretchr/testify v1.7.0
-	github.com/uber/jaeger-client-go v2.25.0+incompatible
+	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.19.1
 	golang.org/x/tools v0.1.7
