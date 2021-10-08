@@ -55,7 +55,7 @@
   "dependencies": {
     "google-protobuf": "^3.12.4",
     "grpc-web": "^1.2.0",
-    "rxjs": "^7.3.0",
+    "rxjs": "^6.6.2",
     "todomvc-app-css": "^2.4.1",
     "todomvc-common": "^1.0.5"
   }
