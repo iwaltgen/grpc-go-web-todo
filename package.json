@@ -53,7 +53,7 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
-    "google-protobuf": "^3.12.4",
+    "google-protobuf": "^3.18.1",
     "grpc-web": "^1.2.0",
     "rxjs": "^6.6.2",
     "todomvc-app-css": "^2.4.1",
