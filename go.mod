@@ -31,7 +31,7 @@ require (
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.18.1
-	golang.org/x/tools v0.1.5
+	golang.org/x/tools v0.1.7
 	google.golang.org/genproto v0.0.0-20210729151513-df9385d47c1b // indirect
 	google.golang.org/grpc v1.42.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
