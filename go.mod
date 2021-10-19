@@ -7,7 +7,7 @@ require (
 	github.com/bufbuild/buf v0.43.2
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
-	github.com/fatih/color v1.12.0
+	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.5
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/golangci/golangci-lint v1.41.1
