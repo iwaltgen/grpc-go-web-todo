@@ -5,7 +5,6 @@ go 1.16
 require (
 	github.com/bitfield/script v0.18.0
 	github.com/bufbuild/buf v0.43.2
-	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/fatih/color v1.12.0
 	github.com/fullstorydev/grpcurl v1.8.2
@@ -14,7 +13,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/iancoleman/strcase v0.2.0 // indirect
-	github.com/improbable-eng/grpc-web v0.14.0
+	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/klauspost/compress v1.13.1 // indirect
 	github.com/labstack/echo-contrib v0.9.0
 	github.com/labstack/echo/v4 v4.5.0
