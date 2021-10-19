@@ -8,7 +8,7 @@ require (
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/fatih/color v1.12.0
-	github.com/fullstorydev/grpcurl v1.8.2
+	github.com/fullstorydev/grpcurl v1.8.5
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/golangci/golangci-lint v1.41.1
 	github.com/google/wire v0.5.0
@@ -24,6 +24,7 @@ require (
 	github.com/mfridman/tparse v0.8.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rakyll/statik v0.1.7
+	github.com/smartystreets/assertions v1.0.0 // indirect
 	github.com/spf13/cobra v1.2.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/twitchtv/twirp v8.1.0+incompatible // indirect
