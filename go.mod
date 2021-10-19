@@ -34,7 +34,7 @@ require (
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.5
 	google.golang.org/genproto v0.0.0-20210729151513-df9385d47c1b // indirect
-	google.golang.org/grpc v1.40.0-dev
+	google.golang.org/grpc v1.42.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.27.1
 	nhooyr.io/websocket v1.8.7 // indirect
