@@ -1,3 +1,4 @@
+//go:build mage
 // +build mage
 
 package main
@@ -35,22 +36,24 @@ type (
 )
 
 var (
-	started       int64
-	gocmd, gitcmd func(args ...string) error
-	workspace     string
+	started               int64
+	gocmd, gitcmd, npmcmd func(args ...string) error
+	workspace             string
 )
 
 func init() {
+	workspace, _ = os.Getwd()
 	started = time.Now().Unix()
 	gocmd = sh.RunCmd(mg.GoCmd())
 	gitcmd = sh.RunCmd("git")
-	workspace, _ = os.Getwd()
+	npmcmd = func(args ...string) error {
+		return sh.RunV("npm", args...)
+	}
 }
 
 // Run lint frontend & backend app
 func Lint() error {
-	// TODO(iwaltgen): svelte typescript support not yet
-	if err := sh.RunV("npm", "run", "lint"); err != nil {
+	if err := npmcmd("run", "lint"); err != nil {
 		return err
 	}
 
@@ -85,7 +88,7 @@ func Dev() error {
 	mg.Deps(Build)
 
 	go func() {
-		_ = sh.RunV("npm", "run", "dev")
+		_ = npmcmd("run", "dev")
 	}()
 	return sh.RunV("server")
 }
@@ -104,7 +107,7 @@ func Build() error {
 		return err
 	}
 
-	return sh.RunWith(b.buildEnv(), mg.GoCmd(), b.buildParameters()...)
+	return b.Backend()
 }
 
 func (BUILD) Front() error {
@@ -116,7 +119,11 @@ func (BUILD) Front() error {
 		return nil
 	}
 
-	return sh.RunV("npm", "run", "build")
+	return npmcmd("run", "build")
+}
+
+func (b BUILD) Backend() error {
+	return sh.RunWith(b.buildEnv(), mg.GoCmd(), b.buildParameters()...)
 }
 
 func (BUILD) buildParameters() []string {
@@ -146,9 +153,9 @@ func (BUILD) buildEnv() map[string]string {
 }
 
 // Clean build artifacts
-func Clean() {
-	_ = sh.Rm("public/build")
+func Clean() error {
 	_ = sh.Rm("build")
+	return npmcmd("cache", "clean", "--force")
 }
 
 // Generate API
@@ -269,7 +276,7 @@ func Install() error {
 	}
 
 	color.Green("install npm packages...")
-	return sh.RunV("npm", "install")
+	return npmcmd("install")
 }
 
 // Update 3rd party proto files
