@@ -20,6 +20,11 @@ import (
 	"github.com/mattn/go-zglob"
 )
 
+// TODO(iwaltgen): apply https://github.com/looplab/eventhorizon
+// TODO(iwaltgen): remove curl, jq
+// https://github.com/go-resty/resty
+// https://github.com/tidwall/gjson
+
 const (
 	packageName = "github.com/iwaltgen/grpc-go-web-todo"
 	version     = "0.1.1"
@@ -28,24 +33,22 @@ const (
 )
 
 type (
-	API     mg.Namespace
-	GEN     mg.Namespace
-	BUILD   mg.Namespace
-	VERSION mg.Namespace
-	DEV     mg.Namespace
+	API   mg.Namespace
+	GEN   mg.Namespace
+	BUILD mg.Namespace
+	DEV   mg.Namespace
 )
 
 var (
-	started               int64
-	gocmd, gitcmd, npmcmd func(args ...string) error
-	workspace             string
+	started       int64
+	gocmd, npmcmd func(args ...string) error
+	workspace     string
 )
 
 func init() {
 	workspace, _ = os.Getwd()
 	started = time.Now().Unix()
 	gocmd = sh.RunCmd(mg.GoCmd())
-	gitcmd = sh.RunCmd("git")
 	npmcmd = func(args ...string) error {
 		return sh.RunV("npm", args...)
 	}
@@ -335,16 +338,6 @@ func execPipeCmds(cmds ...string) *script.Pipe {
 		pipe.SetError(nil)
 	}
 	return pipe
-}
-
-func replaceTextInFile(path, old, new string) error {
-	read, err := os.ReadFile(path)
-	if err != nil {
-		return fmt.Errorf("failed to read file: %w", err)
-	}
-
-	newContents := strings.Replace(string(read), old, new, -1)
-	return os.WriteFile(path, []byte(newContents), 0)
 }
 
 func changesTarget(dst string, globs ...string) (bool, error) {
