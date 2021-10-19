@@ -17,7 +17,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.14.0
 	github.com/klauspost/compress v1.13.1 // indirect
 	github.com/labstack/echo-contrib v0.9.0
-	github.com/labstack/echo/v4 v4.5.0
+	github.com/labstack/echo/v4 v4.6.1
 	github.com/lyft/protoc-gen-star v0.5.3 // indirect
 	github.com/magefile/mage v1.11.0
 	github.com/mattn/go-zglob v0.0.3
@@ -30,8 +30,6 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.18.1
-	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.5
 	google.golang.org/genproto v0.0.0-20210729151513-df9385d47c1b // indirect
 	google.golang.org/grpc v1.40.0-dev
