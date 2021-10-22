@@ -6,17 +6,15 @@ require (
 	github.com/bitfield/script v0.18.0
 	github.com/bufbuild/buf v0.56.0
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
-	github.com/envoyproxy/protoc-gen-validate v0.6.1
+	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.5
 	github.com/golangci/golangci-lint v1.42.1
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/improbable-eng/grpc-web v0.14.0
 	github.com/labstack/echo-contrib v0.11.0
 	github.com/labstack/echo/v4 v4.6.1
-	github.com/lyft/protoc-gen-star v0.5.3 // indirect
 	github.com/magefile/mage v1.11.0
 	github.com/mattn/go-zglob v0.0.3
 	github.com/mfridman/tparse v0.8.3
