@@ -9,8 +9,9 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.5
-	github.com/golangci/golangci-lint v1.42.1
+	github.com/golangci/golangci-lint v1.43.0
 	github.com/google/wire v0.5.0
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/improbable-eng/grpc-web v0.14.0
 	github.com/labstack/echo-contrib v0.11.0
@@ -20,7 +21,6 @@ require (
 	github.com/mfridman/tparse v0.8.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rakyll/statik v0.1.7
-	github.com/smartystreets/assertions v1.0.0 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
