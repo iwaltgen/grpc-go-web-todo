@@ -17,7 +17,7 @@ require (
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/magefile/mage v1.11.0
 	github.com/mattn/go-zglob v0.0.3
-	github.com/mfridman/tparse v0.8.3
+	github.com/mfridman/tparse v0.9.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rakyll/statik v0.1.7
 	github.com/stretchr/objx v0.2.0 // indirect
