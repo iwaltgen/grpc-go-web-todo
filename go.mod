@@ -24,7 +24,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	go.uber.org/atomic v1.9.0
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 	golang.org/x/tools v0.1.8
 	google.golang.org/grpc v1.44.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
