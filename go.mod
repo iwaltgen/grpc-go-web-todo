@@ -7,7 +7,7 @@ require (
 	github.com/bufbuild/buf v0.56.0
 	github.com/envoyproxy/protoc-gen-validate v0.6.3
 	github.com/fatih/color v1.13.0
-	github.com/fullstorydev/grpcurl v1.8.5
+	github.com/fullstorydev/grpcurl v1.8.6
 	github.com/golangci/golangci-lint v1.44.0
 	github.com/google/wire v0.5.0
 	github.com/gorilla/websocket v1.4.2 // indirect
