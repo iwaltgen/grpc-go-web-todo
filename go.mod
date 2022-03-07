@@ -3,7 +3,7 @@ module github.com/iwaltgen/grpc-go-web-todo
 go 1.16
 
 require (
-	github.com/bitfield/script v0.18.4
+	github.com/bitfield/script v0.18.5
 	github.com/bufbuild/buf v0.56.0
 	github.com/envoyproxy/protoc-gen-validate v0.6.7
 	github.com/fatih/color v1.13.0
