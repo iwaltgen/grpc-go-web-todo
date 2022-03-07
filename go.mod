@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/bitfield/script v0.18.4
 	github.com/bufbuild/buf v0.56.0
-	github.com/envoyproxy/protoc-gen-validate v0.6.6
+	github.com/envoyproxy/protoc-gen-validate v0.6.7
 	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.6
 	github.com/golangci/golangci-lint v1.44.2
