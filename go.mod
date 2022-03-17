@@ -15,7 +15,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/labstack/echo-contrib v0.12.0
 	github.com/labstack/echo/v4 v4.7.2
-	github.com/magefile/mage v1.12.1
+	github.com/magefile/mage v1.13.0
 	github.com/mattn/go-zglob v0.0.3
 	github.com/mfridman/tparse v0.9.0
 	github.com/opentracing/opentracing-go v1.2.0
