@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/bitfield/script v0.19.0
-	github.com/bufbuild/buf v0.56.0
+	github.com/bufbuild/buf v1.3.0
 	github.com/envoyproxy/protoc-gen-validate v0.6.7
 	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.6
@@ -26,7 +26,7 @@ require (
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/tools v0.1.10
-	google.golang.org/grpc v1.46.0-dev
+	google.golang.org/grpc v1.46.0-dev.0.20220224182858-328efcc9276e
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.28.0
 	nhooyr.io/websocket v1.8.7 // indirect
