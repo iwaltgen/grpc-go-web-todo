@@ -8,7 +8,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.7
 	github.com/fatih/color v1.13.0
 	github.com/fullstorydev/grpcurl v1.8.6
-	github.com/golangci/golangci-lint v1.45.2
+	github.com/golangci/golangci-lint v1.46.0
 	github.com/google/wire v0.5.0
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
@@ -25,7 +25,7 @@ require (
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.21.0
-	golang.org/x/tools v0.1.10
+	golang.org/x/tools v0.1.11-0.20220316014157-77aa08bb151a
 	google.golang.org/grpc v1.46.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.28.0
